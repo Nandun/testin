@@ -3,11 +3,20 @@
  Some of the html was adapted from http://www.w3schools.com/howto/howto_css_login_form.asp
 -->
 
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <link rel="stylesheet" type="text/css" href="css/compareu.css">
+    <meta charset="UTF-8">
+    <title>CompareU</title>
+    
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("#flip").click(function(){
+        $("#panel").slideToggle("slow");
+    });
+});
+</script>
 </head>
 
 <body>
@@ -35,4 +44,3 @@
 </body>
 
 </html>
-
