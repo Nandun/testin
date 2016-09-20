@@ -22,3 +22,7 @@ $('#schoolSelector').change(function()
 function deleteItem(divElem){
     divElem.parentElement.removeChild(divElem);
 }
+
+function goBack() {
+    location.href = 'landing.html'
+}
