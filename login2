@@ -1,0 +1,46 @@
+<!--
+ This page represents a placeholder for a user login page.
+ Some of the html was adapted from http://www.w3schools.com/howto/howto_css_login_form.asp
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CompareU</title>
+    
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("#flip").click(function(){
+        $("#panel").slideToggle("slow");
+    });
+});
+</script>
+</head>
+
+<body>
+<h2>Enter your login information</h2>
+  <div class="container">
+    <span class="psw">New User?<a href="#"> Sign Up</a></span>
+  </div>
+
+  <div class="container">
+    <label><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="uname" required>
+
+    <label><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="psw" required pattern=".{6,}">
+        
+    <button type="submit">Login</button>
+    <input type="checkbox" checked="checked"> Remember me
+  </div>
+
+  <div class="container" style="background-color:#f1f1f1">
+    <button type="button" class="cancelbtn">Cancel</button>
+    <span class="psw"><a href="#">Forgot password</a></span>
+  </div>
+</form>
+</body>
+
+</html>
