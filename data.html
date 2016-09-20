@@ -14,16 +14,37 @@ on a radar chart.
 <header>
     <h1>CompareU</h1>
 </header>
-<select>
-    <option value="George Mason University">George Mason University</option>
-    <option value="James Madison University">James Madison University</option>
-    <option value="University of Virginia">University of Virginia</option>
-    <option value="Virginia Commonwealth University">Virginia Commonwealth University</option>
+
+<select id="schoolSelector">
+    <option value="GeorgeMasonUniversity">George Mason University</option>
+    <option value="JamesMadisonUniversity">James Madison University</option>
+    <option value="UniversityOfVirginia">University Of Virginia</option>
+    <option value="VirginiaCommonwealthUniversity">Virginia Commonwealth University</option>
 </select>
 
-<div id="radar-container">
-    <img src="img/radar_example.png" style="width:75%;height:auto;"/>
-</div>
+<div id="schoolsList"></div>
+
+<div id="radarTitle"><h2>George Mason University</h2></div>
+
+<!--<div id="radar-container">-->
+    <!--<img src="img/radar_example.png" style="width:75%;height:auto;"/>-->
+<!--</div>-->
+
+<div class="schoolPicture" id="GeorgeMasonUniversity"><img src="img/exploratory_hall.jpg"></div>
+<div class="schoolPicture" style="display: none" id="JamesMadisonUniversity"><img src="img/JamesMadisonUniversity.jpeg"></div>
+<div class="schoolPicture" style="display: none" id="UniversityOfVirginia"><img src="img/UniversityOfVirginia.jpg"></div>
+<div class="schoolPicture" style="display: none" id="VirginiaCommonwealthUniversity"><img src="img/VirginiaCommonwealthUniversity.jpg"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="js/compareu.js"></script>
+
+<script>
+    var data = $.getJSON("data.json", function(data){
+        return data;
+    });
+
+
+</script>
 
 </body>
 </html>
