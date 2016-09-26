@@ -1,48 +1,21 @@
 <!--
  This page represents a placeholder for a user login page.
- Some of the html was adapted from http://www.w3schools.com/howto/howto_css_login_form.asp
+ html was adapted from a Bootstrap login example
 -->
+<div class="container">
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>CompareU</title>
-    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/compareu.css"/>
+  <form class="form-signin">
+    <h2 class="form-signin-heading">Please sign in</h2>
+    <label for="inputEmail" class="sr-only">Email address</label>
+    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="remember-me"> Remember me
+      </label>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+  </form>
 
-</head>
-
-<body>
-<h2>Enter your login information</h2>
-  <div class="container">
-    <span class="psw">New User?<a href="#"> Sign Up</a></span>
-  </div>
-
-  <div class="container">
-    <label><b>Username</b></label>
-    <input type="text" placeholder="Enter Username" name="uname" required>
-
-    <label><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="psw" required pattern=".{6,}">
-        
-    <button type="submit">Login</button>
-    <input type="checkbox" checked="checked"> Remember me
-  </div>
-
-  <div class="container" style="background-color:#f1f1f1">
-    <button type="button" class="cancelbtn">Cancel</button>
-    <span class="psw"><a href="#">Forgot password</a></span>
-  </div>
-
-  <div class="container">
-    <button onclick="goBack()">Go Back to Landing</button>
-  </div>
-</form>
-
-<script src="js/compareu.js"></script>
-
-</body>
-
-</html>
+</div> <!-- /container -->
