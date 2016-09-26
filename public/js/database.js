@@ -10,14 +10,25 @@ var config = {
 
 firebase.initializeApp(config);
 
-function writeUserData() {
-
+function registerUser() {
     var username = $('#registerUsername').val();
     var password = $('#registerPassword').val();
-    var email = $('#registerEmail').val();
+    var firstName = $('#registerFirstName').val();
+    var lastName = $('#registerLastName').val();
+    var ref = firebase.database().ref("users/" + username);
 
-    firebase.database().ref('users/' + username).set({
-        email: email,
-        password: password
-    });
+    ref.once("value")
+        .then(function(snapshot) {
+            if(snapshot.exists()){
+                alert("Username already exists. Please pick a different username, or login");
+                return;
+            }
+            else{
+                ref.set({
+                    password: password,
+                    first_name: firstName,
+                    last_name: lastName
+                });
+            }
+        });
 }
