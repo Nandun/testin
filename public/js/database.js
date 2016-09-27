@@ -11,12 +11,12 @@ var config = {
 firebase.initializeApp(config);
 
 function registerUser() {
-    var ref = firebase.database().ref("users/" + username);
-
     var username = $('#registerUsername').val();
     var password = $('#registerPassword').val();
     var firstName = $('#registerFirstName').val();
     var lastName = $('#registerLastName').val();
+
+    var ref = firebase.database().ref("users/" + username);
 
     ref.once("value")
         .then(function(snapshot) {
