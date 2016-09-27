@@ -11,17 +11,17 @@ var config = {
 firebase.initializeApp(config);
 
 function registerUser() {
+    var ref = firebase.database().ref("users/" + username);
+
     var username = $('#registerUsername').val();
     var password = $('#registerPassword').val();
     var firstName = $('#registerFirstName').val();
     var lastName = $('#registerLastName').val();
-    var ref = firebase.database().ref("users/" + username);
 
     ref.once("value")
         .then(function(snapshot) {
             if(snapshot.exists()){
                 alert("Username already exists. Please pick a different username, or login");
-                return;
             }
             else{
                 ref.set({
@@ -31,4 +31,22 @@ function registerUser() {
                 });
             }
         });
+}
+
+function loginUser() {
+    var username = $('#inputUsername').val();
+    var password = $('#inputPassword').val();
+
+    var ref = firebase.database().ref("users/" + username);
+
+    ref.once("value")
+        .then(function(snapshot) {
+            if(snapshot.exists() && snapshot.child("password").val() === password){
+                $('#loginAlert').html('<div class="alert alert-success" role="alert">Logged in!</div>')
+            }
+            else{
+                $('#loginAlert').html('<div class="alert alert-danger" role="alert">Username or Password incorrect</div>')
+            }
+
+        })
 }
