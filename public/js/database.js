@@ -44,7 +44,9 @@ function loginUser() {
     ref.once("value")
         .then(function(snapshot) {
             if(snapshot.exists() && snapshot.child("password").val() === password){
-                $('#loginAlert').html('<div class="alert alert-success" role="alert">Logged in!</div>')
+                $('#loginAlert').html('<div class="alert alert-success" role="alert">Logged in!</div>');
+                var current_datetime = Date();
+                ref.child('logins').push({datetime : current_datetime});
             }
             else{
                 $('#loginAlert').html('<div class="alert alert-danger" role="alert">Username or Password incorrect</div>')
