@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Compare-U</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/compareu.css">
+
+</head>
+<body>
+
+    <div id="doc">
+        <div id="hd">
+            <!-- Code adapted from Bootstrap example -->
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Compare-U</a>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a href="#compare-tool">Compare</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#login">Login</a></li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        </div>
+        <div id="mainContent" class="content">
+            <div id="app" role="application">
+
+                <!-- LANDING VIEW -->
+                <div class="panel" id="landing">
+                    <div class="row">
+                        <div class="jumbotron col-md-8 col-md-offset-2">
+                            <h1>CompareU</h1>
+                            <p>CompareU is the one tool you need to select the university of your dreams.</p>
+                            <p><a class="btn btn-primary btn-lg" href="#compare-tool" role="button">Start Comparing!</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LOGIN VIEW -->
+                <div class="panel" id="login">
+                    <div class="container">
+                        <form class="form-signin">
+                            <h2 class="form-signin-heading">Please sign in</h2>
+                            <label for="inputUsername" class="sr-only">Email address</label>
+                            <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+                            <label for="inputPassword" class="sr-only">Password</label>
+                            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                            <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="loginUser()">Sign in</button>
+                            <a href="#register" style="display: table;margin: 0 auto; font-size: large;">Register</a>
+                        </form>
+                        <div id="loginAlert"></div>
+                    </div> <!-- /container -->
+                </div>
+
+
+                <!-- COMPARE TOOL VIEW -->
+                <div class="panel" id="compare-tool">
+                    <div class="container">
+                        <select id="schoolSelector"></select>
+
+                        <div id="schoolsList"></div>
+
+                        <div id="radarTitle"><h2></h2></div>
+
+                        <div id="schoolInfo"></div>
+
+                        <div id="radar-container"></div>
+                    </div>
+                </div>
+
+                <!-- REGISTER VIEW -->
+                <!-- Code adapted from http://bootsnipp.com/snippets/featured/basic-register-page -->
+                <div class="panel" id="register">
+                    <div class="container-fluid">
+                        <section class="container">
+                            <div class="container-page">
+                                <div class="col-md-6">
+                                    <h3 class="dark-grey">Registration</h3>
+
+                                    <div class="form-group col-lg-12">
+                                        <label>Username</label>
+                                        <input type="text" class="form-control" id="registerUsername">
+                                    </div>
+
+                                    <div class="form-group col-lg-12">
+                                        <label>Password</label>
+                                        <input type="password" name="" class="form-control" id="registerPassword">
+                                    </div>
+
+                                    <div class="form-group col-lg-6">
+                                        <label>First Name</label>
+                                        <input type="text" class="form-control" id="registerFirstName">
+                                    </div>
+
+                                    <div class="form-group col-lg-6">
+                                        <label>Last Name</label>
+                                        <input type="text" name="" class="form-control" id="registerLastName">
+                                    </div>
+
+                                    <div class="form-group col-lg-12" id="registerAlert"></div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h3>WARNING</h3>
+                                    <p>Don't use a password that you care about AT ALL. This is not being encrypted, everyone can see it, be smart.</p>
+                                    <h3 class="dark-grey">Terms and Conditions</h3>
+                                    <p>
+                                        By clicking on "Register" you agree to CompareU's Terms and Conditions
+                                    </p>
+                                    <p>
+                                        While rare, prices are subject to change based on exchange rate fluctuations -
+                                        In the event of such a fluctuation, the maximum price of CompareU will be zero US Dollars.
+                                    </p>
+                                    <p>
+                                        Should there be an error in the description or pricing of a product, we will provide you with a full refund of zero US Dollars.
+                                    </p>
+                                    <p>
+                                        Failure to read these Terms and Conditions will result in an automatic grade of A for CompareU's creators.
+                                    </p>
+
+                                    <button type="submit" class="btn btn-primary" onclick="registerUser()">Register</button>
+                                    <button type="submit" class="btn btn-info" onclick="window.location='#login';">Back to Login</button>
+
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+<script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="js/compareu.js"></script>
+<script src="js/database.js"></script>
+</body>
+</html>

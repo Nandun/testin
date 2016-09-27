@@ -8,10 +8,33 @@ about the web app, as well as a link to the login page.
 <head>
     <meta charset="UTF-8">
     <title>CompareU</title>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/compareu.css">
+    <link rel="stylesheet" type="text/css" href="css/compareu.css"/>
+    
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("#flip").click(function(){
+        $("#panel").slideToggle("slow");
+    });
+});
+</script>
 </head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+function appendText() {
+    var txt1 = "<p>Text.</p>";              // Create text with HTML
+    var txt2 = $("<p></p>").text("Text.");  // Create text with jQuery
+    var txt3 = document.createElement("p");
+    txt3.innerHTML = "Text.";               // Create text with DOM
+    $("body").append(txt1, txt2, txt3);     // Append new elements
+}
+</script>
 <body>
+
+<div id="flip">Sign In</div>
+<div id="panel">Your account</div>
+
 <div id="main-container">
     <div id="background-image">
         <img src="img/exploratory_hall.jpg">
@@ -43,6 +66,7 @@ about the web app, as well as a link to the login page.
 
     </table>
 </div>
+<button onclick="appendText()">Append text</button>
 
 <div id="login-btn-container">
     <form action="login.html">
@@ -50,7 +74,8 @@ about the web app, as well as a link to the login page.
     </form>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.1.0.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
 </body>
+
+
 </html>
