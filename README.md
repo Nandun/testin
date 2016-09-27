@@ -1,6 +1,11 @@
 # compare-u
 SWE 432 Project
 
+NOTE:
+deployed on Heroku at compare-u.herokuapp.com
+
+Can also be run using `node server.js`
+
 Four scenarios:
 1. Users can register and login
 
