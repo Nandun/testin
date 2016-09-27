@@ -29,6 +29,8 @@ function registerUser() {
                     first_name: firstName,
                     last_name: lastName
                 });
+                $('#registerAlert').html('<div class="alert alert-success" role="alert">Successfully Registered!</div>')
+
             }
         });
 }
