@@ -14,7 +14,7 @@ Four scenarios:
 
 3. Added todo-list fucntion for favorite universities
 
-4. Users who are logged in can save their comparisons
+4. Users can compare multiple universities using a radar chart implemented with D3
 
 
-For HW3 we have implemented (somewhat simplified versions of) scenarios 1 and 2.
+For HW4 we have implemented (somewhat simplified versions of) scenarios 1, 2, and 3.
