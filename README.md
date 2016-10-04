@@ -11,7 +11,7 @@ Four scenarios:
 
 2. Users can see detailed information about one specific university at a time
 
-3. Users can compare multiple universities using a radar chart implemented with D3
+3. Added todo-list fucntion for favorite universities
 
 4. Users who are logged in can save their comparisons
 
