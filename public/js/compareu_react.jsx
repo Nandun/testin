@@ -1,25 +1,28 @@
 "use strict";
 
 // Populate select element with Virginia universities
+var va_schools = $.ajax("https://api.data.gov/ed/collegescorecard/v1/schools?_fields=school.name,id&_per_page=100&school.main_campus=1&school.state=va&school.degrees_awarded.predominant=3&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU")
+    .done(function () {
 
+        var data = va_schools.responseJSON.results;
+        var html = '';
+        var len = data.length;
+        for (var i = 0; i < len; i++) {
+            html += '<option value="' + data[i]['id'] + '">' + data[i]['school.name'] + '</option>';
+        }
+        $('#schoolSelector').append(html);
+    });
 
 
 var information = [];
 
-var d = [
-    [
-        {axis:"Admission rate",value:0},
-        {axis:"SAT score",value:0},
-        {axis:"number of students",value:0},
-        {axis:"test",value:0},
-    ],
-];
+var d = [];
 var selectedSchoolID;
-var selectedSchoolName ;
-var admission_rate ;
-var sat_score ;
+var selectedSchoolName;
+var admission_rate;
+var sat_score;
 var num_students;
-var dlen = 1;
+var earnings;
 function school_select() {
     selectedSchoolID = $('#schoolSelector').val();
 
@@ -37,6 +40,7 @@ function school_select() {
             admission_rate = (data.results[0]['2014.admissions.admission_rate.overall'] * 100).toFixed(1);
             sat_score = data.results[0]['2014.admissions.sat_scores.average.overall'];
             num_students = data.results[0]['2014.student.size'];
+            earnings = data['2012.earnings.6_yrs_after_entry.median'];
 
             school_select_d3();
             //this.forceUpdate();
@@ -50,73 +54,80 @@ function school_select() {
 
 function school_select_d3() {
 
-          information =  [
-                {axis:"Admission rate",value:admission_rate*1000},
-                {axis:"SAT score",value:sat_score*10},
-                {axis:"number of students",value:num_students},
-              {axis:"test",value:90},
-            ]
-            d[d.length] = (information);
-            LegendOptions.push(selectedSchoolName);
-            var mycfg = {
-                w: w,
-                h: h,
-                maxValue: 0.6,
-                levels: 6,
-                ExtraWidthX: 300
-            }
+    information = [
+        {axis: "Admission rate", value: admission_rate * 1000},
+        {axis: "SAT score", value: sat_score * 10},
+        {axis: "number of students", value: num_students},
+        {axis: "test", value: 90},
+    ];
+    d[d.length] = (information);
+    LegendOptions.push(selectedSchoolName);
+    var mycfg = {
+        w: w,
+        h: h,
+        maxValue: 0.6,
+        levels: 6,
+        ExtraWidthX: 300
+    }
 
-            RadarChart.draw("#chart", d, mycfg);
+    RadarChart.draw("#chart", d, mycfg);
 
 ////////////////////////////////////////////
 /////////// Initiate legend ////////////////
 //////////////////////////////////////////// 
 
-            var svg = d3.select('#body')
-                .selectAll('svg')
-                .append('svg')
-                .attr("width", w+300)
-                .attr("height", h)
+    var svg = d3.select('#body')
+        .selectAll('svg')
+        .append('svg')
+        .attr("width", w + 300)
+        .attr("height", h)
 
 //Create the title for the legend
-            var text = svg.append("text")
-                .attr("class", "title")
-                .attr('transform', 'translate(90,0)')
-                .attr("x", w - 70)
-                .attr("y", 10)
-                .attr("font-size", "12px")
-                .attr("fill", "#404040")
-                .text("University Statistics");
+    var text = svg.append("text")
+        .attr("class", "title")
+        .attr('transform', 'translate(90,0)')
+        .attr("x", w - 70)
+        .attr("y", 10)
+        .attr("font-size", "12px")
+        .attr("fill", "#404040")
+        .text("University Statistics");
 
 //Initiate Legend
-            var legend = svg.append("g")
-                    .attr("class", "legend")
-                    .attr("height", 100)
-                    .attr("width", 200)
-                    .attr('transform', 'translate(90,20)')
-                ;
+    var legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("height", 100)
+            .attr("width", 200)
+            .attr('transform', 'translate(90,20)')
+        ;
 //Create colour squares
-            legend.selectAll('rect')
-                .data(LegendOptions)
-                .enter()
-                .append("rect")
-                .attr("x", w - 65)
-                .attr("y", function(d, i){ return i * 20;})
-                .attr("width", 10)
-                .attr("height", 10)
-                .style("fill", function(d, i){ return colorscale(i);})
-            ;
+    legend.selectAll('rect')
+        .data(LegendOptions)
+        .enter()
+        .append("rect")
+        .attr("x", w - 65)
+        .attr("y", function (d, i) {
+            return i * 20;
+        })
+        .attr("width", 10)
+        .attr("height", 10)
+        .style("fill", function (d, i) {
+            return colorscale(i);
+        })
+    ;
 //Create text next to squares
-            legend.selectAll('text')
-                .data(LegendOptions)
-                .enter()
-                .append("text")
-                .attr("x", w - 52)
-                .attr("y", function(d, i){ return i * 20 + 9;})
-                .attr("font-size", "11px")
-                .attr("fill", "#737373")
-                .text(function(d) { return d; })
-            ;
+    legend.selectAll('text')
+        .data(LegendOptions)
+        .enter()
+        .append("text")
+        .attr("x", w - 52)
+        .attr("y", function (d, i) {
+            return i * 20 + 9;
+        })
+        .attr("font-size", "11px")
+        .attr("fill", "#737373")
+        .text(function (d) {
+            return d;
+        });
 
     $('#schoolInfo').html('<p>Admission Rate: ' + admission_rate + "%</p>" +
         '<p>SAT Score: ' + sat_score + '</p>' +
@@ -128,14 +139,10 @@ function school_select_d3() {
     $('#schoolsList').append(
         '<div class="schoolsItem" data-school-id = ' + selectedSchoolID + '><span> ' + selectedSchoolName + '</span>' +
         '<button onClick={deleteItem}> Delete School </button></div>'
-
     );
 
-    $('#radarTitle').html('<h2>' + selectedSchoolName + '</h2>');
 
-    $('.schoolPicture').hide(); //hide all images before showing selected one
-
-};
+}
 
 
 function deleteItem() {
@@ -144,7 +151,7 @@ function deleteItem() {
 
 // this code adapted from professor's example
 function show(id) {
-    if(id){
+    if (id) {
         $('.panel')//Select all elements with panel class
             .hide() //Hide all of them
             .filter(id) //Select just the one with the given id
@@ -175,7 +182,7 @@ var colorscale = d3.scale.category10();
 var LegendOptions = [];
 
 
-var URL= "https://api.data.gov/ed/collegescorecard/v1/schools?_fields=school.name,id&_per_page=100&school.main_campus=1&school.state=va&school.degrees_awarded.predominant=3&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
+var URL = "https://api.data.gov/ed/collegescorecard/v1/schools?_fields=school.name,id&_per_page=100&school.main_campus=1&school.state=va&school.degrees_awarded.predominant=3&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
 var Universitycomp = React.createClass({
     getInitialState: function () {
         return {
@@ -185,9 +192,9 @@ var Universitycomp = React.createClass({
     render: function () {
         return (
             <div className="chartcompare">
-                    <select id="schoolSelector" onChange={school_select}>
-                        {this.state.options}
-                    </select>
+                <select id="schoolSelector" onChange={school_select}>
+                    {this.state.options}
+                </select>
 
                 <div id="schoolsList"></div>
 
@@ -204,13 +211,13 @@ var Universitycomp = React.createClass({
     },
 
     componentWillMount: function () {
-     //   user = localStorage.getItem('username');
+        //   user = localStorage.getItem('username');
         $.ajax({
             url: URL,
             type: 'GET',
             dataType: 'json',
             cache: true,
-            success: function(data) {
+            success: function (data) {
                 for (var i = 0; i < data.results.length; i++) {
                     var sch_id = data.results[i]['id'];
                     var sch_name = data.results[i]['school.name'];
@@ -231,6 +238,4 @@ var Universitycomp = React.createClass({
 ReactDOM.render(
     <Universitycomp />,
     document.getElementById('compareChart')
-
-
 );

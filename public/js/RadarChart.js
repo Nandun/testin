@@ -25,7 +25,7 @@ var RadarChart = {
             TranslateY: 30,
             ExtraWidthX: 100,
             ExtraWidthY: 100,
-            color: d3.scale.category10()
+            color: d3.scaleOrdinal(d3.schemeCategory10)
         };
 
         if('undefined' !== typeof options){
@@ -39,7 +39,7 @@ var RadarChart = {
         var allAxis = (d[0].map(function(i, j){return i.axis}));
         var total = allAxis.length;
         var radius = cfg.factor*Math.min(cfg.w/2, cfg.h/2);
-        var Format = d3.format('%');
+        var Format = d3.format('d');
         d3.select(id).select("svg").remove();
 
         var g = d3.select(id)
@@ -48,12 +48,12 @@ var RadarChart = {
             .attr("height", cfg.h+cfg.ExtraWidthY)
             .append("g")
             .attr("transform", "translate(" + cfg.TranslateX + "," + cfg.TranslateY + ")");
-        ;
+
 
         var tooltip;
 
         //Circular segments
-        for(var j=0; j<cfg.levels-1; j++){
+        for(var j=0; j<cfg.levels; j++){
             var levelFactor = cfg.factor*radius*((j+1)/cfg.levels);
             g.selectAll(".levels")
                 .data(allAxis)
@@ -87,7 +87,7 @@ var RadarChart = {
                 .text(Format((j+1)*cfg.maxValue/cfg.levels));
         }
 
-        series = 0;
+        var series = 0;
 
         var axis = g.selectAll(".axis")
             .data(allAxis)
