@@ -172,7 +172,7 @@ var w = 500,
 var colorscale = d3.scale.category10();
 
 //Legend titles
-var LegendOptions = [];
+var LegendOptions = [""];
 
 
 var URL= "https://api.data.gov/ed/collegescorecard/v1/schools?_fields=school.name,id&_per_page=100&school.main_campus=1&school.state=va&school.degrees_awarded.predominant=3&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
