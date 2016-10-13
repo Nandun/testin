@@ -200,68 +200,68 @@ var Universitycomp = React.createClass({
 
                 this.state.LegendOptions.push(selectedSchoolName);
                 var mycfg = {
-                    w: w,
-                    h: h,
+                    w: 500,
+                    h: 500,
                     maxValue: 100,
                     levels: 5,
                     ExtraWidthX: 300
                 };
 
-                RadarChart.draw("#chart", this.state.selected_schools, mycfg);
+                RadarChart.draw("#chart", this.state.selected_schools, mycfg, this.state.LegendOptions);
 
 ////////////////////////////////////////////
 /////////// Initiate legend ////////////////
 ////////////////////////////////////////////
 
-                var svg = d3.select('#chartContainer')
-                    .selectAll('svg')
-                    .append('svg')
-                    .attr("width", w + 300)
-                    .attr("height", h);
-//Create the title for the legend
-                var text = svg.append("text")
-                    .attr("class", "title")
-                    .attr('transform', 'translate(90,0)')
-                    .attr("x", w - 70)
-                    .attr("y", 10)
-                    .attr("font-size", "12px")
-                    .attr("fill", "#404040")
-                    .text("Universities");
-
-//Initiate Legend
-                var legend = svg.append("g")
-                    .attr("class", "legend")
-                    .attr("height", 100)
-                    .attr("width", 200)
-                    .attr('transform', 'translate(90,20)');
-//Create colour squares
-                legend.selectAll('rect')
-                    .data(this.state.LegendOptions)
-                    .enter()
-                    .append("rect")
-                    .attr("x", w - 65)
-                    .attr("y", function (d, i) {
-                        return i * 20;
-                    })
-                    .attr("width", 10)
-                    .attr("height", 10)
-                    .style("fill", function (d, i) {
-                        return colorscale(i);
-                    });
-//Create text next to squares
-                legend.selectAll('text')
-                    .data(this.state.LegendOptions)
-                    .enter()
-                    .append("text")
-                    .attr("x", w - 52)
-                    .attr("y", function (d, i) {
-                        return i * 20 + 9;
-                    })
-                    .attr("font-size", "11px")
-                    .attr("fill", "#737373")
-                    .text(function (d) {
-                        return d;
-                    });
+//                 var svg = d3.select('#chartContainer')
+//                     .selectAll('svg')
+//                     .append('svg')
+//                     .attr("width", mycfg.w + 300)
+//                     .attr("height", mycfg.h);
+// //Create the title for the legend
+//                 var text = svg.append("text")
+//                     .attr("class", "title")
+//                     .attr('transform', 'translate(90,0)')
+//                     .attr("x", mycfg.w - 70)
+//                     .attr("y", 10)
+//                     .attr("font-size", "12px")
+//                     .attr("fill", "#404040")
+//                     .text("Universities");
+//
+// //Initiate Legend
+//                 var legend = svg.append("g")
+//                     .attr("class", "legend")
+//                     .attr("height", 100)
+//                     .attr("width", 200)
+//                     .attr('transform', 'translate(90,20)');
+// //Create colour squares
+//                 legend.selectAll('rect')
+//                     .data(this.state.LegendOptions)
+//                     .enter()
+//                     .append("rect")
+//                     .attr("x", mycfg.w - 65)
+//                     .attr("y", function (d, i) {
+//                         return i * 20;
+//                     })
+//                     .attr("width", 10)
+//                     .attr("height", 10)
+//                     .style("fill", function (d, i) {
+//                         return colorscale(i);
+//                     });
+// //Create text next to squares
+//                 legend.selectAll('text')
+//                     .data(this.state.LegendOptions)
+//                     .enter()
+//                     .append("text")
+//                     .attr("x", mycfg.w - 52)
+//                     .attr("y", function (d, i) {
+//                         return i * 20 + 9;
+//                     })
+//                     .attr("font-size", "11px")
+//                     .attr("fill", "#737373")
+//                     .text(function (d) {
+//                         return d;
+//                     });
 
                 // $('#schoolsList').append(
                 //     // {/*<SchoolsListElement id={selectedSchoolID} name={selectedSchoolName}/>*/}
@@ -269,7 +269,7 @@ var Universitycomp = React.createClass({
                 //     '<div class="schoolsItem" data-school-id = ' + selectedSchoolID + '><span> ' + selectedSchoolName + '</span>'
                 //     // '<button onClick={deleteItem}> Delete School </button></div>'
                 // );
-                this.forceUpdate();
+                // this.forceUpdate();
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(URL, status, err.toString());
@@ -313,7 +313,7 @@ var Universitycomp = React.createClass({
                         <option key={i} value={sch_id}> {sch_name} </option>
                     );
                 }
-                this.forceUpdate();
+                this.setState(this.state);
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(URL, status, err.toString());
@@ -328,7 +328,7 @@ var SchoolInfo = React.createClass({
         render: function () {
             if (this.props.data.name != undefined) {
                 return (
-                    <div class="container">
+                    <div className="container">
                         <br></br><p><b>{this.props.data.name}</b></p>
                         <p>Admission Rate: {this.props.data.admission_rate}</p>
                         <p>SAT Score: {this.props.data.sat_score}</p>
