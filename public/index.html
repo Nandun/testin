@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Compare-U</title>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/compareu.css">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="js/RadarChart.js"></script>
     <script src="build/react.js"></script>
     <script src="build/react-dom.js"></script>
     <script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
@@ -20,6 +17,14 @@
     <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/compareu.css">
+
 </head>
 <body>
 
@@ -63,122 +68,46 @@
                         <p><a class="btn btn-primary btn-lg" href="#compare-tool" role="button">Start Comparing!</a></p>
                     </div>
                 </div>
+
             </div>
 
+            <!-- COMPARE TOOL VIEW
+                  <script type="text/javascript" src="js/compareu.js"></script> -->
+            <div class="panel" id="compare-tool">
+                <script type="text/babel" src="js/compareu.js"></script>
+                <div id="compareChart"> </div>
+            </div>
             <!-- LOGIN VIEW -->
-                <div class="panel" id="login">
-            <script type="text/babel" src="js/database.js"></script>
-                        <div id="loginpage"> </div>
-                </div> <!-- /container -->
+            <div class="panel" id="login">
+                <script type="text/babel" src="js/database.js"></script>
+                <div id="loginpage"> </div>
+
+            </div> <!-- /container -->
         </div>
-        </div>
-
-     <!-- compareVIEW-->
-    <div class="panel" id="compare-tool">
-        <div class="container">
-            <select id="schoolSelector"></select>
-
-            <div id="schoolsList"></div>
-
-            <div id="radarTitle"><h2></h2></div>
-
-            <div id="schoolInfo"></div>
-
-            <div id="radar-container"></div>
-        </div>
-        <div id="container">
-            <div id="myDIV" class="header">
-                <h2 style="margin:5px">Favorite Universities</h2>
-                <input type="text" id="myInput" placeholder="Title...">
-                <span onclick="newElement()" class="addBtn">Add</span>
-            </div>
-
-            <ul id="myUL">
-            </ul>
-
-            <script>
-                // Create a "close" button and append it to each list item
-                var myNodelist = document.getElementsByTagName("LI");
-                var i;
-                for (i = 0; i < myNodelist.length; i++) {
-                    var span = document.createElement("SPAN");
-                    var txt = document.createTextNode("\u00D7");
-                    span.className = "close";
-                    span.appendChild(txt);
-                    myNodelist[i].appendChild(span);
-                }
-
-                // Click on a close button to hide the current list item
-                var close = document.getElementsByClassName("close");
-                var i;
-                for (i = 0; i < close.length; i++) {
-                    close[i].onclick = function() {
-                        var div = this.parentElement;
-                        div.style.display = "none";
-                    }
-                }
-
-                // Add a "checked" symbol when clicking on a list item
-                var list = document.querySelector('ul');
-                list.addEventListener('click', function(ev) {
-                    if (ev.target.tagName === 'LI') {
-                        ev.target.classList.toggle('checked');
-                    }
-                }, false);
-
-                // Create a new list item when clicking on the "Add" button
-                function newElement() {
-                    var li = document.createElement("li");
-                    var inputValue = document.getElementById("myInput").value;
-                    var t = document.createTextNode(inputValue);
-                    li.appendChild(t);
-                    if (inputValue === '') {
-                        alert("You must write something!");
-                    } else {
-                        document.getElementById("myUL").appendChild(li);
-                    }
-                    document.getElementById("myInput").value = "";
-
-                    var span = document.createElement("SPAN");
-                    var txt = document.createTextNode("\u00D7");
-                    span.className = "close";
-                    span.appendChild(txt);
-                    li.appendChild(span);
-
-                    for (i = 0; i < close.length; i++) {
-                        close[i].onclick = function() {
-                            var div = this.parentElement;
-                            div.style.display = "none";
-                        }
-                    }
-                }
-            </script>
-        </div>
+    </div>
 
 
+            <!-- REGISTER VIEW -->
+            <!-- Code adapted from http://bootsnipp.com/snippets/featured/basic-register-page -->
+    <div class="panel" id="register">
+        <script type="text/babel" src="js/database.js"></script>
+        <div id="RegPage"></div>
+        <button type="submit" class="btn btn-info" onclick="window.location='#login';">Back to Login</button>
+    </div>
+
+</div>
+</div>
 
 
-    <!-- RegVIEW -->
-
-        <div class="panel" id="register">
-            <script type="text/babel" src="js/database.js"></script>
-                    <div id="RegPage"></div>
-            <button type="submit" class="btn btn-info" onclick="window.location='#login';">Back to Login</button>
-        </div>
-
+</div>
     </div>
 </div>
 
 
-        </div>
-    </div>
-</div>
-
-
-            <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-            <script src="js/compareu.js"></script>
-            <script src="js/database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="js/compareu.js"></script>
+<script src="js/database.js"></script>
 </body>
 </html>
