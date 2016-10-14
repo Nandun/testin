@@ -12,9 +12,9 @@ Four scenarios:
 
 2. Users can see detailed information about one specific university at a time
 
-3. Added todo-list fucntion for favorite universities
+3. Users can compare multiple universities using a radar chart implemented with D3
 
-4. Users can compare multiple universities using a radar chart implemented with D3
+4. Users can save favorite universities if they are logged in
 
 
-For HW4 we have implemented (somewhat simplified versions of) scenarios 1, 2, and 3.
+For HW5 we have implemented 1, 2, and 3. Scenario 4 is not working at the moment. 1, 2, and 3 all use React.
