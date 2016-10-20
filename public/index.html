@@ -5,7 +5,7 @@
     <title>Compare-U</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-with-addons.js"></script>
     <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
     <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
@@ -13,12 +13,20 @@
     <script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
           integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <link rel="stylesheet" href="css/compareu.css">
+
+    <!-- Jasmine -->
+    <link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine/jasmine_favicon.png">
+    <link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine/jasmine.css">
+    <script type="text/javascript" src="jasmine/lib/jasmine/jasmine.js"></script>
+    <script type="text/javascript" src="jasmine/lib/jasmine/jasmine-html.js"></script>
+    <script type="text/javascript" src="jasmine/lib/jasmine/boot.js"></script>
+
+
 </head>
 <body>
 
@@ -80,6 +88,405 @@
 <script src="js/compareu.js"></script>
 <script src="js/database.js"></script>
 <script src="js/RadarChart.js"></script>
-<script src="js/react_components.jsx" type="text/babel"></script>
+<!--<script src="js/react_components.jsx" type="text/babel"></script>-->
+<!--<script src="js/tests.js" type="text/babel"></script>-->
+
+<script type="text/babel">
+    "use strict";
+
+    ////// REGISTER COMPONENT
+    var RegClass = React.createClass({
+        registerUser: function () {
+            var username = $('#registerUsername').val();
+            var password = $('#registerPassword').val();
+            var firstName = $('#registerFirstName').val();
+            var lastName = $('#registerLastName').val();
+
+            this.ref = firebase.database().ref("users/" + username);
+            var ref = this.ref;
+
+            this.ref.once("value")
+                    .then(function (snapshot) {
+                        if (snapshot.exists()) {
+                            alert("Username already exists. Please pick a different username, or login");
+                        }
+                        else {
+                            ref.set({
+                                password: password,
+                                first_name: firstName,
+                                last_name: lastName
+                            });
+                            $('#registerAlert').html('<div class="alert alert-success" role="alert">Successfully Registered!</div>')
+
+                        }
+                    });
+        },
+
+
+        render: function () {
+            return (
+                    <div className="container-fluid">
+                        <section className="container">
+                            <div className="container-page">
+                                <div className="col-md-6">
+                                    <h3 className="dark-grey">Registration</h3>
+
+                                    <div className="form-group col-lg-12">
+                                        <label>Username</label>
+                                        <input type="text" className="form-control" id="registerUsername"/>
+                                    </div>
+
+                                    <div className="form-group col-lg-12">
+                                        <label>Password</label>
+                                        <input type="password" name="" className="form-control" id="registerPassword"/>
+                                    </div>
+
+                                    <div className="form-group col-lg-6">
+                                        <label>First Name</label>
+                                        <input type="text" className="form-control" id="registerFirstName"/>
+                                    </div>
+
+                                    <div className="form-group col-lg-6">
+                                        <label>Last Name</label>
+                                        <input type="text" name="" className="form-control" id="registerLastName"/>
+                                    </div>
+
+                                    <div className="form-group col-lg-12" id="registerAlert"></div>
+                                </div>
+
+                                <div className="col-md-6">
+                                    <h3>WARNING</h3>
+                                    <p>Don't use a password that you care about AT ALL. This is not being encrypted,
+                                        everyone can see it, be smart.</p>
+                                    <h3 className="dark-grey">Terms and Conditions</h3>
+                                    <p>
+                                        By clicking on "Register" you agree to CompareU's Terms and Conditions
+                                    </p>
+                                    <p>
+                                        While rare, prices are subject to change based on exchange rate fluctuations -
+                                        In the event of such a fluctuation, the maximum price of CompareU will be zero US
+                                        Dollars.
+                                    </p>
+                                    <p>
+                                        Should there be an error in the description or pricing of a product, we will provide
+                                        you with a full refund of zero US Dollars.
+                                    </p>
+                                    <p>
+                                        Failure to read these Terms and Conditions will result in an automatic grade of A
+                                        for CompareU's creators.
+                                    </p>
+
+
+                                    <button type="submit" className="btn btn-primary" onClick={this.registerUser}>Register
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+            );
+        }
+    });
+
+    ReactDOM.render(
+            <RegClass />,
+            document.getElementById('register')
+    );
+
+
+    ////// LOGIN COMPONENT
+    var LogClass = React.createClass({
+        getInitialState: function () {
+            return {
+                current_user: ""
+            }
+        },
+        loginUser: function (e) {
+            e.preventDefault();
+            var username = $('#inputUsername').val();
+            var password = $('#inputPassword').val();
+            var current_user = "";
+
+            this.ref = firebase.database().ref("users/" + username);
+            var ref = this.ref;
+
+            this.ref.once("value")
+                    .then(function (snapshot) {
+                        if (snapshot.exists() && snapshot.child("password").val() === password) {
+                            $('#loginAlert').html('<div class="alert alert-success" role="alert">Logged in!</div>');
+                            var current_datetime = Date();
+                            ref.child('logins').push({datetime: current_datetime});
+                            current_user = username;
+                        }
+                        else {
+                            $('#loginAlert').html('<div class="alert alert-danger" role="alert">Username or Password incorrect</div>')
+                        }
+
+                    });
+        },
+
+
+        render: function () {
+            return (
+                    <div className="container">
+                        <form className="form-signin">
+                            <h2 className="form-signin-heading">Please sign in</h2>
+                            <label htmlFor="inputUsername" className="sr-only">Email address</label>
+                            <input type="text" id="inputUsername" className="form-control" placeholder="Username" required
+                                   autoFocus/>
+                            <label htmlFor="inputPassword" className="sr-only">Password</label>
+                            <input type="password" id="inputPassword" className="form-control" placeholder="Password"
+                                   required/>
+                            <button className="btn btn-lg btn-primary btn-block" type="submit" onClick={this.loginUser}>Sign
+                                in
+                            </button>
+                            <a href="#register" style={{display: "table", margin: "0 auto", fontSize: "large"}}>Register</a>
+                        </form>
+                        <div id="loginAlert"></div>
+                    </div>
+            )
+        }
+    });
+
+    ReactDOM.render(
+            <LogClass />,
+            document.getElementById('login')
+    );
+
+
+    ////////COMPARE TOOL COMPONENTS
+
+    var Universitycomp = React.createClass({
+        getInitialState: function () {
+            return {
+                options: [],
+                selected_schools: [],
+                LegendOptions: [],
+                currentSchool: {}
+            }
+        },
+        school_select: function () {
+            var selectedSchoolID = $('#schoolSelector').find(":selected").val();
+            var selectedSchoolName = $('#schoolSelector').find(":selected").text();
+
+            var res = "https://api.data.gov/ed/collegescorecard/v1/schools?id=" + selectedSchoolID +
+                    "&fields=2014.admissions.admission_rate.overall,2014.admissions.sat_scores.average.overall,2014.student.size," +
+                    "2012.earnings.6_yrs_after_entry.median&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
+            $.ajax({
+                url: res,
+                type: 'GET',
+                dataType: 'json',
+                cache: true,
+                success: function (data) {
+                    var admission_rate = (data.results[0]['2014.admissions.admission_rate.overall'] * 100).toFixed(1);
+                    var sat_score = data.results[0]['2014.admissions.sat_scores.average.overall'];
+                    var num_students = data.results[0]['2014.student.size'];
+                    var earnings = data.results[0]['2012.earnings.6_yrs_after_entry.median'];
+
+                    this.setState({
+                        currentSchool: {
+                            name: selectedSchoolName,
+                            admission_rate: admission_rate,
+                            sat_score: sat_score,
+                            num_students: num_students,
+                            earnings: earnings
+                        }
+                    });
+
+                    var information = [
+                        {axis: "Admission rate", value: admission_rate},
+                        {axis: "SAT score", value: sat_score / 16},
+                        {axis: "Number of Students", value: num_students / 500},
+                        {axis: "Earnings", value: earnings / 500},
+                    ];
+
+                    this.state.selected_schools[this.state.selected_schools.length] = information;
+
+                    this.state.LegendOptions.push(selectedSchoolName);
+                    var mycfg = {
+                        w: 500,
+                        h: 500,
+                        maxValue: 100,
+                        levels: 5,
+                        ExtraWidthX: 300
+                    };
+
+                    RadarChart.draw("#chart", this.state.selected_schools, mycfg, this.state.LegendOptions);
+
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(URL, status, err.toString());
+                    alert("Error retrieving data");
+                }.bind(this)
+            });
+        },
+
+
+        render: function () {
+            return (
+                    <div className="chartcompare">
+                        <select id="schoolSelector" onChange={this.school_select}>
+                            {this.state.options}
+                        </select>
+                        <button type="button" className="btn btn-primary" onClick={this.save_favorite}>Save Favorites</button>
+
+                        {/*<div id="schoolInfo"></div>*/}
+                        <SchoolInfo data={this.state.currentSchool}/>
+
+                        <div id="radar-container">
+                            <div id="chartContainer">
+                                <div id="chart"></div>
+                            </div>
+                        </div>
+                    </div>
+            );
+        },
+
+        componentWillMount: function () {
+            var URL = "https://api.data.gov/ed/collegescorecard/v1/schools?_fields=school.name,id&_per_page=100&school.main_campus=1&school.state=va&school.degrees_awarded.predominant=3&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
+            $.ajax({
+                url: URL,
+                type: 'GET',
+                dataType: 'json',
+                cache: true,
+                success: function (data) {
+                    for (var i = 0; i < data.results.length; i++) {
+                        var sch_id = data.results[i]['id'];
+                        var sch_name = data.results[i]['school.name'];
+                        this.state.options.push(
+                                <option key={i} value={sch_id}> {sch_name} </option>
+                        );
+                    }
+                    this.setState(this.state);
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(URL, status, err.toString());
+                    alert("Error retrieving data");
+                }.bind(this)
+            });
+        }
+    });
+
+    // child component of University comp
+    var SchoolInfo = React.createClass({
+                render: function () {
+                    if (this.props.data.name != undefined) {
+                        return (
+                                <div className="container">
+                                    <br></br><p><b>{this.props.data.name}</b></p>
+                                    <p>Admission Rate: {this.props.data.admission_rate}</p>
+                                    <p>SAT Score: {this.props.data.sat_score}</p>
+                                    <p>Number of Students: {this.props.data.num_students}</p>
+                                    <p>Median Earnings: {this.props.data.earnings}</p>
+                                </div>
+                        )
+                    }
+                    else return null;
+                }
+            }
+    );
+
+    ReactDOM.render(
+            <Universitycomp />,
+            document.getElementById('compare-tool')
+    );
+
+
+
+
+    //////// JASMINE TESTS ////////////
+
+    describe("Compare", function () {
+
+        var TestUtils = React.addons.TestUtils;
+        var compareComponent, element, renderedDOM;
+
+        beforeEach(function (done) {
+
+            element = React.createElement(Universitycomp);
+            compareComponent = TestUtils.renderIntoDocument(element);
+            window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+            setTimeout(function () {
+                done();
+            }, 500);
+        });
+        it("Has a School Select options", function () {
+            let school = TestUtils.scryRenderedDOMComponentsWithTag(compareComponent, "select");
+            expect(school[0].id).toBe("schoolSelector")
+        });
+        it("Has a non-empty schools list", function () {
+            let option = TestUtils.scryRenderedDOMComponentsWithTag(compareComponent, "option");
+            expect(option.length).toBeGreaterThan(1);
+        });
+    });
+
+    describe("Login", function () {
+
+        var TestUtils = React.addons.TestUtils;
+        var loginComponent, element, username, password;
+
+        beforeEach(function () {
+
+            element = React.createElement(LogClass);
+            loginComponent = TestUtils.renderIntoDocument(element);
+        });
+
+        it("Has a Signup Button", function () {
+            let button = TestUtils.scryRenderedDOMComponentsWithTag(loginComponent, "button")[0];
+            expect(button.innerHTML).toBe("Sign in")
+        });
+        it("Has a Username Field", function () {
+            let input = TestUtils.scryRenderedDOMComponentsWithTag(loginComponent, "input")[0];
+            expect(input.id).toBe("inputUsername")
+        });
+        describe("Sign in button", function () {
+            var username, password;
+
+            beforeEach(function(done) {
+                username = "admin";
+                password = "admin";
+                spyOn(loginComponent.ref.child('logins'),"push");
+            });
+            it("should push to firebase", function () {
+                let button = TestUtils.findRenderedDOMComponentWithTag(loginComponent,"button");
+                TestUtils.Simulate.click(button);
+                expect(loginComponent.ref.push).toHaveBeenCalled();
+            });
+        })
+
+
+    });
+    describe("Register", function () {
+
+        var TestUtils = React.addons.TestUtils;
+        var registerComponent, element;
+
+        beforeEach(function (done) {
+
+            element = React.createElement(RegClass);
+            registerComponent = TestUtils.renderIntoDocument(element);
+
+        });
+
+        it("Has a Signup Button", function () {
+            let button = TestUtils.scryRenderedDOMComponentsWithTag(registerComponent, "button")[0];
+            expect(button.innerHTML).toBe("Register")
+        });
+        it("Has a Username Field", function () {
+            let input = TestUtils.scryRenderedDOMComponentsWithTag(registerComponent, "input")[0];
+            expect(input.id).toBe("registerUsername")
+        });
+        it("Should alert if username already exists", function () {
+            spyOn(window, 'alert');
+            expect(window.alert).toHaveBeenCalledWith("Username already exists. Please pick a different username, or login");
+        });
+        it("Should call ref.set to register new user", function () {
+            return false; // need to implement
+        });
+    });
+
+
+</script>
+
 </body>
 </html>
