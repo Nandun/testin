@@ -203,7 +203,7 @@
             alert(username +"usernam1");
 
             alert(password +"pass");
-            $.ajax({url: "http://localhost:3000/login",
+            $.ajax({url: "http://compare-u.herokuapp.com/login",
                 type: 'PUT',
                 data: { userid: username, password: password},
                 success: function(data) {
