@@ -20,10 +20,10 @@ firebase.initializeApp(config);
 var dbRef = firebase.database().ref('users');
 
 var port = process.env.PORT || 3000;
-
+//;lm;l,;l,L,;l,;l,;l,;l,;l,
 
 app.put('/login', function (req, res) {
-    console.log("Here");
+    console.log("Hejbjhbjhre");
     var user=req.body.userid;
     var pass=req.body.password;
     var dbRef1=dbRef;
