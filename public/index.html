@@ -19,12 +19,6 @@
           integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <link rel="stylesheet" href="css/compareu.css">
 
-    <!-- Jasmine -->
-    <link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine/jasmine_favicon.png">
-    <link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine/jasmine.css">
-    <script type="text/javascript" src="jasmine/lib/jasmine/jasmine.js"></script>
-    <script type="text/javascript" src="jasmine/lib/jasmine/jasmine-html.js"></script>
-    <script type="text/javascript" src="jasmine/lib/jasmine/boot.js"></script>
 
 
 </head>
@@ -206,23 +200,30 @@
             var username = $('#inputUsername').val();
             var password = $('#inputPassword').val();
             var current_user = "";
+            alert(username +"usernam1");
 
-            this.ref = firebase.database().ref("users/" + username);
-            var ref = this.ref;
+            alert(password +"pass");
+            $.ajax({url: "http://localhost:3000/login",
+                type: 'PUT',
+                data: { userid: username, password: password},
+                success: function(data) {
 
-            this.ref.once("value")
-                    .then(function (snapshot) {
-                        if (snapshot.exists() && snapshot.child("password").val() === password) {
-                            $('#loginAlert').html('<div class="alert alert-success" role="alert">Logged in!</div>');
-                            var current_datetime = Date();
-                            ref.child('logins').push({datetime: current_datetime});
-                            current_user = username;
-                        }
-                        else {
-                            $('#loginAlert').html('<div class="alert alert-danger" role="alert">Username or Password incorrect</div>')
-                        }
-
-                    });
+                    switch (data) {
+                        case "0":
+                            alert("Loing Successful");
+                            document.getElementById("coursereg").innerHTML = "Click here for Course Registration";
+                        case "1":
+                            alert("Invalid User, Please signup");
+                            break;
+                        case "2":
+                            alert("Invalid Password. Please retry.");
+                            break;
+                    }
+                },
+                error: function() {
+                    alert('Error');
+                }
+            });
         },
 
 
@@ -394,96 +395,6 @@
 
 
 
-    //////// JASMINE TESTS ////////////
-
-    describe("Compare", function () {
-
-        var TestUtils = React.addons.TestUtils;
-        var compareComponent, element, renderedDOM;
-
-        beforeEach(function (done) {
-
-            element = React.createElement(Universitycomp);
-            compareComponent = TestUtils.renderIntoDocument(element);
-            window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-            setTimeout(function () {
-                done();
-            }, 500);
-        });
-        it("Has a School Select options", function () {
-            let school = TestUtils.scryRenderedDOMComponentsWithTag(compareComponent, "select");
-            expect(school[0].id).toBe("schoolSelector")
-        });
-        it("Has a non-empty schools list", function () {
-            let option = TestUtils.scryRenderedDOMComponentsWithTag(compareComponent, "option");
-            expect(option.length).toBeGreaterThan(1);
-        });
-    });
-
-    describe("Login", function () {
-
-        var TestUtils = React.addons.TestUtils;
-        var loginComponent, element, username, password;
-
-        beforeEach(function () {
-
-            element = React.createElement(LogClass);
-            loginComponent = TestUtils.renderIntoDocument(element);
-        });
-
-        it("Has a Signup Button", function () {
-            let button = TestUtils.scryRenderedDOMComponentsWithTag(loginComponent, "button")[0];
-            expect(button.innerHTML).toBe("Sign in")
-        });
-        it("Has a Username Field", function () {
-            let input = TestUtils.scryRenderedDOMComponentsWithTag(loginComponent, "input")[0];
-            expect(input.id).toBe("inputUsername")
-        });
-        describe("Sign in button", function () {
-            var username, password;
-
-            beforeEach(function(done) {
-                username = "admin";
-                password = "admin";
-                spyOn(loginComponent.ref.child('logins'),"push");
-            });
-            it("should push to firebase", function () {
-                let button = TestUtils.findRenderedDOMComponentWithTag(loginComponent,"button");
-                TestUtils.Simulate.click(button);
-                expect(loginComponent.ref.push).toHaveBeenCalled();
-            });
-        })
-
-
-    });
-    describe("Register", function () {
-
-        var TestUtils = React.addons.TestUtils;
-        var registerComponent, element;
-
-        beforeEach(function (done) {
-
-            element = React.createElement(RegClass);
-            registerComponent = TestUtils.renderIntoDocument(element);
-
-        });
-
-        it("Has a Signup Button", function () {
-            let button = TestUtils.scryRenderedDOMComponentsWithTag(registerComponent, "button")[0];
-            expect(button.innerHTML).toBe("Register")
-        });
-        it("Has a Username Field", function () {
-            let input = TestUtils.scryRenderedDOMComponentsWithTag(registerComponent, "input")[0];
-            expect(input.id).toBe("registerUsername")
-        });
-        it("Should alert if username already exists", function () {
-            spyOn(window, 'alert');
-            expect(window.alert).toHaveBeenCalledWith("Username already exists. Please pick a different username, or login");
-        });
-        it("Should call ref.set to register new user", function () {
-            return false; // need to implement
-        });
-    });
 
 
 </script>
