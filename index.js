@@ -14,8 +14,10 @@ var config = {
     storageBucket: "compare-u.appspot.com",
     messagingSenderId: "896952563705"
 };
-
-firebase.initializeApp(config);
+firebase.initializeApp({
+    serviceAccount: "privkey.json",
+    databaseURL: "https://compare-82656.firebaseio.com"
+});
 
 var dbRef = firebase.database().ref('users');
 
