@@ -10,16 +10,40 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 firebase.initializeApp({
     serviceAccount: "privkey.json",
     databaseURL: "https://compare-u.firebaseio.com",
-    
+
 });
+
 
 var dbRef = firebase.database().ref('users');
 
 var port = process.env.PORT || 3000;
-//;lm;l,;l,L,;l,;l,;l,;l,;l,
+
+app.put('/register', function (req, res) {
+
+    var username=req.body.userid;
+    var password=req.body.password;
+    var firstName=req.body.firstName;
+    var lastName=req.body.lastName;
+
+    dbRef.child(username).once("value")
+        .then(function (snapshot) {
+            if (snapshot.exists()) {
+                res.send("1")
+            }
+            else {
+                dbRef.child(username).set({
+                    password: password,
+                    first_name: firstName,
+                    last_name: lastName
+                });
+                res.send("0")
+            }
+        });
+
+});
 
 app.put('/login', function (req, res) {
-    console.log("Hejbjhbjhre");
+    console.log("Here");
     var user=req.body.userid;
     var pass=req.body.password;
     var dbRef1=dbRef;
@@ -32,8 +56,6 @@ app.put('/login', function (req, res) {
             } else {
                 var datetime = Date();
                 console.log("Login Successful!");
-                window.localStorage.setItem('username', user);
-                dbRef1.child(user).push({logintime: datetime});
                 res.send("0");   // Code never reaches here need to investigate
                 return;
             }
