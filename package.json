@@ -4,7 +4,8 @@
   "description": "SWE 432 Project",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,9 @@
     "firebase-tools": "^3.0.7",
     "nodemon": "^1.10.2",
     "react": "^15.3.2",
-    "react-dom": "^15.3.2",
-    "reactfire": "^1.0.0"
+    "sentiment": "^2.0.0",
+    "express-fileupload": "0.0.5",
+    "google-cloud": "^0.42.2",
+    "multer": "^1.2.0"
   }
 }
