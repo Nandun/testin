@@ -18,3 +18,5 @@ Four scenarios:
 
 
 For HW5 we have implemented 1, 2, and 3. Scenario 4 is not working at the moment. 1, 2, and 3 all use React.
+
+My group change as Sam Brady has left the class, my new Partners are CLifford Baker and Anthony Nguyen and they are working on this repo also.
