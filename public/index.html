@@ -1,401 +1,159 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Compare-U</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-with-addons.js"></script>
-    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-    <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
-    <script src="https://unpkg.com/remarkable@1.7.1/dist/remarkable.min.js"></script>
-    <script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/compareu.css">
+
+var gcloud = require('google-cloud');
+var multer = require("multer");
+var uploader = multer({ storage: multer.memoryStorage({}) });
+var firebase = require("firebase");
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+    extended: true
+}));
 
 
+firebase.initializeApp({
+    serviceAccount: "privkey.json",
+    databaseURL: "https://compare-u.firebaseio.com",
 
-</head>
-<body>
+});
 
-<div id="doc">
-    <div id="hd">
-        <!-- Code adapted from Bootstrap example -->
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">Compare-U</a>
-                </div>
+/**
+ * Google cloud storage part
+ */
+var CLOUD_BUCKET="compare-u.appspot.com"; //From storage console, list of buckets
+var gcs = gcloud.storage({
+    projectId: '896952563705', //from storage console, then click settings, then "x-goog-project-id"
+    keyFilename: 'privkey.json' //the key we already set up
+});
 
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li><a href="#compare-tool">Compare</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#login">Login</a></li>
-                    </ul>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
-        </nav>
-    </div>
+function getPublicUrl (filename) {
+    return 'https://storage.googleapis.com/' + CLOUD_BUCKET + '/' + filename;
+}
 
-    <div id="mainContent" class="content">
-        <div id="app" role="application">
+var bucket = gcs.bucket(CLOUD_BUCKET);
 
-            <!-- LANDING VIEW -->
-            <div class="panel" id="landing">
-                <div class="row">
-                    <div class="jumbotron col-md-8 col-md-offset-2">
-                        <h1>CompareU</h1>
-                        <p>CompareU is the one tool you need to select the university of your dreams.</p>
-                        <p><a class="btn btn-primary btn-lg" href="#compare-tool" role="button">Start Comparing!</a></p>
-                    </div>
-                </div>
-            </div>
+//From https://cloud.google.com/nodejs/getting-started/using-cloud-storage
+function sendUploadToGCS (req, res, next) {
+    if (!req.file) {
+        return next();
+    }
 
-            <!-- LOGIN VIEW -->
-            <div class="panel" id="login"></div>
-
-            <!-- REGISTER VIEW -->
-            <div class="panel" id="register"></div>
-
-            <!-- COMPARE TOOL VIEW -->
-            <div class="panel" id="compare-tool"></div>
-        </div>
-    </div>
-</div>
-<script src="js/compareu.js"></script>
-<script src="js/database.js"></script>
-<script src="js/RadarChart.js"></script>
-<!--<script src="js/react_components.jsx" type="text/babel"></script>-->
-<!--<script src="js/tests.js" type="text/babel"></script>-->
-
-<script type="text/babel">
-    "use strict";
-
-    ////// REGISTER COMPONENT
-    var RegClass = React.createClass({
-        registerUser: function () {
-            var username = $('#registerUsername').val();
-            var password = $('#registerPassword').val();
-            var firstName = $('#registerFirstName').val();
-            var lastName = $('#registerLastName').val();
-
-            $.ajax({url: "http://compare-u.herokuapp.com/register",
-                type: 'PUT',
-                data: { userid: username, password: password, firstName: firstName, lastName: lastName},
-                success: function(data) {
-                    switch (data) {
-                        case "1":
-                            alert("Username already exists. Please pick a different username, or login");
-                            break;
-                        case "0":
-                            alert("succesfully registered");
-                            break;
-                    }
-                },
-                error: function() {
-                    alert('Error');
-                }
-            });
-        },
+    var gcsname = Date.now() + req.file.originalname;
+    var file = bucket.file(gcsname);
 
 
-        render: function () {
-            return (
-                    <div className="container-fluid">
-                        <section className="container">
-                            <div className="container-page">
-                                <div className="col-md-6">
-                                    <h3 className="dark-grey">Registration</h3>
-
-                                    <div className="form-group col-lg-12">
-                                        <label>Username</label>
-                                        <input type="text" className="form-control" id="registerUsername"/>
-                                    </div>
-
-                                    <div className="form-group col-lg-12">
-                                        <label>Password</label>
-                                        <input type="password" name="" className="form-control" id="registerPassword"/>
-                                    </div>
-
-                                    <div className="form-group col-lg-6">
-                                        <label>First Name</label>
-                                        <input type="text" className="form-control" id="registerFirstName"/>
-                                    </div>
-
-                                    <div className="form-group col-lg-6">
-                                        <label>Last Name</label>
-                                        <input type="text" name="" className="form-control" id="registerLastName"/>
-                                    </div>
-
-                                    <div className="form-group col-lg-12" id="registerAlert"></div>
-                                </div>
-
-                                <div className="col-md-6">
-                                    <h3>WARNING</h3>
-                                    <p>Don't use a password that you care about AT ALL. This is not being encrypted,
-                                        everyone can see it, be smart.</p>
-                                    <h3 className="dark-grey">Terms and Conditions</h3>
-                                    <p>
-                                        By clicking on "Register" you agree to CompareU's Terms and Conditions
-                                    </p>
-                                    <p>
-                                        While rare, prices are subject to change based on exchange rate fluctuations -
-                                        In the event of such a fluctuation, the maximum price of CompareU will be zero US
-                                        Dollars.
-                                    </p>
-                                    <p>
-                                        Should there be an error in the description or pricing of a product, we will provide
-                                        you with a full refund of zero US Dollars.
-                                    </p>
-                                    <p>
-                                        Failure to read these Terms and Conditions will result in an automatic grade of A
-                                        for CompareU's creators.
-                                    </p>
-
-
-                                    <button type="submit" className="btn btn-primary" onClick={this.registerUser}>Register
-                                    </button>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-
-            );
+    var stream = file.createWriteStream({
+        metadata: {
+            contentType: req.file.mimetype
         }
     });
 
-    ReactDOM.render(
-            <RegClass />,
-            document.getElementById('register')
-    );
+    stream.on('error', function (err) {
+        req.file.cloudStorageError = err;
+        next(err);
+    });
 
+    stream.on('finish', function () {
+        req.file.cloudStorageObject = gcsname;
+        req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
+        var options = {
+            entity: 'allUsers',
+            role: gcs.acl.READER_ROLE
+        };
+        file.acl.add(options, function(a,e){next();});//Make file world-readable; this is async so need to wait to return OK until its done
+    });
 
-    ////// LOGIN COMPONENT
-    var LogClass = React.createClass({
-        getInitialState: function () {
-            return {
-                current_user: ""
+    stream.end(req.file.buffer);
+}
+
+var dbRef = firebase.database().ref('users');
+
+var port = process.env.PORT || 3000;
+
+app.put('/register', function (req, res) {
+
+    var username=req.body.userid;
+    var password=req.body.password;
+    var firstName=req.body.firstName;
+    var lastName=req.body.lastName;
+
+    dbRef.child(username).once("value")
+        .then(function (snapshot) {
+            if (snapshot.exists()) {
+                res.send("1")
             }
-        },
-        loginUser: function (e) {
-            e.preventDefault();
-            var username = $('#inputUsername').val();
-            var password = $('#inputPassword').val();
-            var current_user = "";
+            else {
+                dbRef.child(username).set({
+                    password: password,
+                    first_name: firstName,
+                    last_name: lastName
+                });
+                res.send("0")
+            }
+        });
 
-            $.ajax({url: "http://compare-u.herokuapp.com/login",
-                type: 'PUT',
-                data: { userid: username, password: password},
-                success: function(data) {
+});
 
-                    switch (data) {
-                        case "0":
-                            alert("Loing Successful");
-                            current_user=username;
-                            break;
-                        case "1":
-                            alert("Invalid User, Please signup");
-                            break;
-                        case "2":
-                            alert("Invalid Password. Please retry.");
-                            break;
-                    }
-                },
-                error: function() {
-                    alert('Error');
-                }
-            });
-        },
-
-
-        render: function () {
-            return (
-                    <div className="container">
-                        <form className="form-signin">
-                            <h2 className="form-signin-heading">Please sign in</h2>
-                            <label htmlFor="inputUsername" className="sr-only">Email address</label>
-                            <input type="text" id="inputUsername" className="form-control" placeholder="Username" required
-                                   autoFocus/>
-                            <label htmlFor="inputPassword" className="sr-only">Password</label>
-                            <input type="password" id="inputPassword" className="form-control" placeholder="Password"
-                                   required/>
-                            <button className="btn btn-lg btn-primary btn-block" type="submit" onClick={this.loginUser}>Sign
-                                in
-                            </button>
-                            <a href="#register" style={{display: "table", margin: "0 auto", fontSize: "large"}}>Register</a>
-                        </form>
-                        <div id="loginAlert"></div>
-                    </div>
-            )
+app.put('/login', function (req, res) {
+    console.log("Here");
+    var user=req.body.userid;
+    var pass=req.body.password;
+    var dbRef1=dbRef;
+    dbRef.child(user).once("value").then(function (snapshot) {
+        if (snapshot.exists()) {
+            if (pass !== snapshot.child("password").val()) {
+                console.log("Invalid password. Retry!");
+                res.send("2");
+                return;
+            } else {
+                var datetime = Date();
+                console.log("Login Successful!");
+                res.send("0");   // Code never reaches here need to investigate
+                return;
+            }
+        } else {
+            console.log("Invalid user id. Please signup.");
+            res.send("1");
         }
     });
 
-    ReactDOM.render(
-            <LogClass />,
-            document.getElementById('login')
-    );
+});
+
+var dbRef = firebase.database().ref('todos');
 
 
-    ////////COMPARE TOOL COMPONENTS
-
-    var Universitycomp = React.createClass({
-        getInitialState: function () {
-            return {
-                options: [],
-                selected_schools: [],
-                LegendOptions: [],
-                currentSchool: {}
-            }
-        },
-        school_select: function () {
-            var selectedSchoolID = $('#schoolSelector').find(":selected").val();
-            var selectedSchoolName = $('#schoolSelector').find(":selected").text();
-
-            var res = "https://api.data.gov/ed/collegescorecard/v1/schools?id=" + selectedSchoolID +
-                    "&fields=2014.admissions.admission_rate.overall,2014.admissions.sat_scores.average.overall,2014.student.size," +
-                    "2012.earnings.6_yrs_after_entry.median&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
-            $.ajax({
-                url: res,
-                type: 'GET',
-                dataType: 'json',
-                cache: true,
-                success: function (data) {
-                    var admission_rate = (data.results[0]['2014.admissions.admission_rate.overall'] * 100).toFixed(1);
-                    var sat_score = data.results[0]['2014.admissions.sat_scores.average.overall'];
-                    var num_students = data.results[0]['2014.student.size'];
-                    var earnings = data.results[0]['2012.earnings.6_yrs_after_entry.median'];
-
-                    this.setState({
-                        currentSchool: {
-                            name: selectedSchoolName,
-                            admission_rate: admission_rate,
-                            sat_score: sat_score,
-                            num_students: num_students,
-                            earnings: earnings
-                        }
-                    });
-
-                    var information = [
-                        {axis: "Admission rate", value: admission_rate},
-                        {axis: "SAT score", value: sat_score / 16},
-                        {axis: "Number of Students", value: num_students / 500},
-                        {axis: "Earnings", value: earnings / 500},
-                    ];
-
-                    this.state.selected_schools[this.state.selected_schools.length] = information;
-
-                    this.state.LegendOptions.push(selectedSchoolName);
-                    var mycfg = {
-                        w: 500,
-                        h: 500,
-                        maxValue: 100,
-                        levels: 5,
-                        ExtraWidthX: 300
-                    };
-
-                    RadarChart.draw("#chart", this.state.selected_schools, mycfg, this.state.LegendOptions);
-
-                }.bind(this),
-                error: function (xhr, status, err) {
-                    console.error(URL, status, err.toString());
-                    alert("Error retrieving data");
-                }.bind(this)
-            });
-        },
-
-
-        render: function () {
-            return (
-                    <div className="chartcompare">
-                        <select id="schoolSelector" onChange={this.school_select}>
-                            {this.state.options}
-                        </select>
-                        <button type="button" className="btn btn-primary" onClick={this.save_favorite}>Save Favorites</button>
-
-                        {/*<div id="schoolInfo"></div>*/}
-                        <SchoolInfo data={this.state.currentSchool}/>
-
-                        <div id="radar-container">
-                            <div id="chartContainer">
-                                <div id="chart"></div>
-                            </div>
-                        </div>
-                    </div>
-            );
-        },
-
-        componentWillMount: function () {
-            var URL = "https://api.data.gov/ed/collegescorecard/v1/schools?_fields=school.name,id&_per_page=100&school.main_campus=1&school.state=va&school.degrees_awarded.predominant=3&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
-            $.ajax({
-                url: URL,
-                type: 'GET',
-                dataType: 'json',
-                cache: true,
-                success: function (data) {
-                    for (var i = 0; i < data.results.length; i++) {
-                        var sch_id = data.results[i]['id'];
-                        var sch_name = data.results[i]['school.name'];
-                        this.state.options.push(
-                                <option key={i} value={sch_id}> {sch_name} </option>
-                        );
-                    }
-                    this.setState(this.state);
-                }.bind(this),
-                error: function (xhr, status, err) {
-                    console.error(URL, status, err.toString());
-                    alert("Error retrieving data");
-                }.bind(this)
-            });
-        }
+//Make a new one
+app.post('/todo', uploader.single("img"), sendUploadToGCS, function (req, res, next) {
+    var data = {"text" : req.body.todoText};
+    if(req.file)
+        data.img = getPublicUrl(req.file.cloudStorageObject);
+    dbRef.push(data, function () {
+        res.send("OK!");
+    }).catch(function(){
+        res.status(403);
+        res.send();
     });
+});
+//Delete one
+app.delete('/todo', function (req, res) {
+    console.log("Client wants to delete todo: '" +req.body.key);
+    dbRef.child(req.body.key).once("value", function(item){
+        if(item.val().text.toLowerCase().includes("lasagna"))
+            res.status(403);
+        else
+        {
+            dbRef.child(req.body.key).remove();
+            res.send("OK!");
+        }
+    }).catch(function(){
+        res.status(403);
+    });
+});
 
-    // child component of University comp
-    var SchoolInfo = React.createClass({
-                render: function () {
-                    if (this.props.data.name != undefined) {
-                        return (
-                                <div className="container">
-                                    <br></br><p><b>{this.props.data.name}</b></p>
-                                    <p>Admission Rate: {this.props.data.admission_rate}</p>
-                                    <p>SAT Score: {this.props.data.sat_score}</p>
-                                    <p>Number of Students: {this.props.data.num_students}</p>
-                                    <p>Median Earnings: {this.props.data.earnings}</p>
-                                </div>
-                        )
-                    }
-                    else return null;
-                }
-            }
-    );
+app.use(express.static('public'));
 
-    ReactDOM.render(
-            <Universitycomp />,
-            document.getElementById('compare-tool')
-    );
+app.listen(port, function () {
+    console.log('Example app listening on port ' + port);
+});
 
-
-
-
-
-
-</script>
-
-</body>
-</html>
