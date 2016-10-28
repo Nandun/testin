@@ -96,24 +96,23 @@
             var firstName = $('#registerFirstName').val();
             var lastName = $('#registerLastName').val();
 
-            this.ref = firebase.database().ref("users/" + username);
-            var ref = this.ref;
-
-            this.ref.once("value")
-                    .then(function (snapshot) {
-                        if (snapshot.exists()) {
+            $.ajax({url: "http://localhost:3000/register",
+                type: 'PUT',
+                data: { userid: username, password: password, firstName: firstName, lastName: lastName},
+                success: function(data) {
+                    switch (data) {
+                        case "1":
                             alert("Username already exists. Please pick a different username, or login");
-                        }
-                        else {
-                            ref.set({
-                                password: password,
-                                first_name: firstName,
-                                last_name: lastName
-                            });
-                            $('#registerAlert').html('<div class="alert alert-success" role="alert">Successfully Registered!</div>')
-
-                        }
-                    });
+                            break;
+                        case "0":
+                            alert("succesfully registered");
+                            break;
+                    }
+                },
+                error: function() {
+                    alert('Error');
+                }
+            });
         },
 
 
@@ -200,10 +199,8 @@
             var username = $('#inputUsername').val();
             var password = $('#inputPassword').val();
             var current_user = "";
-            alert(username +"usernam1");
 
-            alert(password +"pass");
-            $.ajax({url: "http://compare-u.herokuapp.com/login",
+            $.ajax({url: "http://localhost:3000/login",
                 type: 'PUT',
                 data: { userid: username, password: password},
                 success: function(data) {
@@ -211,7 +208,8 @@
                     switch (data) {
                         case "0":
                             alert("Loing Successful");
-                            document.getElementById("coursereg").innerHTML = "Click here for Course Registration";
+                            current_user=username;
+                            break;
                         case "1":
                             alert("Invalid User, Please signup");
                             break;
