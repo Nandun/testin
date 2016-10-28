@@ -6,17 +6,19 @@ app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
-
+/*
 var config = {
     apiKey: "AIzaSyAre5UpONItVmRqqoc5ykEUBEzgHUSdwuM",
     authDomain: "compare-u.firebaseapp.com",
     databaseURL: "https://compare-u.firebaseio.com",
     storageBucket: "compare-u.appspot.com",
     messagingSenderId: "896952563705"
-};
+};*/
 firebase.initializeApp({
     serviceAccount: "privkey.json",
-    databaseURL: "https://compare-82656.firebaseio.com"
+ //   databaseURL: "https://compare-82656.firebaseio.com"
+    databaseURL: "https://compare-u.firebaseio.com",
+    
 });
 
 var dbRef = firebase.database().ref('users');
