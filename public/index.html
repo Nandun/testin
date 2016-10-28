@@ -100,7 +100,7 @@
             var firstName = $('#registerFirstName').val();
             var lastName = $('#registerLastName').val();
 
-            $.ajax({url: "http://compare-u.herokuapp.com/register",
+            $.ajax({url: "http://compare-u.herokuapp.com//register",
                 type: 'PUT',
                 data: { userid: username, password: password, firstName: firstName, lastName: lastName},
                 success: function(data) {
@@ -127,6 +127,7 @@
                             <div className="container-page">
                                 <div className="col-md-6">
                                     <h3 className="dark-grey">Registration</h3>
+
                                     <div className="form-group col-lg-12">
                                         <label>Username</label>
                                         <input type="text" className="form-control" id="registerUsername"/>
@@ -203,7 +204,7 @@
             var password = $('#inputPassword').val();
             var current_user = "";
 
-            $.ajax({url: "http://compare-u.herokuapp.com/login",
+            $.ajax({url: "http://compare-u.herokuapp.com//login",
                 type: 'PUT',
                 data: { userid: username, password: password},
                 success: function(data) {
