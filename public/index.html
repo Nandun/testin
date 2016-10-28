@@ -96,7 +96,7 @@
             var firstName = $('#registerFirstName').val();
             var lastName = $('#registerLastName').val();
 
-            $.ajax({url: "http://localhost:3000/register",
+            $.ajax({url: "http://compare-u.herokuapp.com/register",
                 type: 'PUT',
                 data: { userid: username, password: password, firstName: firstName, lastName: lastName},
                 success: function(data) {
@@ -200,7 +200,7 @@
             var password = $('#inputPassword').val();
             var current_user = "";
 
-            $.ajax({url: "http://localhost:3000/login",
+            $.ajax({url: "http://compare-u.herokuapp.com/login",
                 type: 'PUT',
                 data: { userid: username, password: password},
                 success: function(data) {
