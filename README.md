@@ -7,8 +7,8 @@ deployed on Heroku at compare-u.herokuapp.com
 Can also be run using `node server.js`
 
 Four scenarios:
-
-1. Users can register and login
+First 3 scenarios for hw 8
+1. Users can register and login(changed to Oauth via google)
 
 2. Users can see detailed information about one specific university at a time
 
