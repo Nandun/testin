@@ -416,9 +416,9 @@
             var selectedSchoolID = $('#schoolSelector').find(":selected").val();
             var selectedSchoolName = $('#schoolSelector').find(":selected").text();
 
-            var res = "https://api.data.gov/ed/collegescorecard/v1/schools?id=" + selectedSchoolID +
+                var res = "https://api.data.gov/ed/collegescorecard/v1/schools?id=" + selectedSchoolID +
                     "&fields=2014.admissions.admission_rate.overall,2014.admissions.sat_scores.average.overall,2014.student.size," +
-                    "2012.earnings.6_yrs_after_entry.median&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
+                    "2012.earnings.6_yrs_after_entry.median,2012.cost.avg_net_price.public,2012.completion.completion_rate_4yr_150nt&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
             $.ajax({
                 url: res,
                 type: 'GET',
@@ -430,13 +430,18 @@
                     var num_students = data.results[0]['2014.student.size'];
                     var earnings = data.results[0]['2012.earnings.6_yrs_after_entry.median'];
 
+                    var cost = data.results[0]['2012.cost.avg_net_price.public'];
+
+                    var completion = data.results[0]['2014.completion.completion_rate_4yr_150nt'];
                     this.setState({
                         currentSchool: {
                             name: selectedSchoolName,
                             admission_rate: admission_rate,
                             sat_score: sat_score,
                             num_students: num_students,
-                            earnings: earnings
+                            earnings: earnings,
+                            cost: cost,
+                            completion: completion
                         }
                     });
 
@@ -445,6 +450,8 @@
                         {axis: "SAT score", value: sat_score / 16},
                         {axis: "Number of Students", value: num_students / 500},
                         {axis: "Earnings", value: earnings / 500},
+                        {axis: "Cost", value: cost / 500},
+                        {axis: "completion_rate", value: completion / 500},
                     ];
 
                     this.state.selected_schools[this.state.selected_schools.length] = information;
