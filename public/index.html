@@ -1,583 +1,605 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Compare-U</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-with-addons.js"></script>
-    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-    <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
-    <script src="https://unpkg.com/remarkable@1.7.1/dist/remarkable.min.js"></script>
-    <script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/compareu.css">
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Compare-U</title>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-with-addons.js"></script>
+        <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+        <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
+        <script src="https://unpkg.com/remarkable@1.7.1/dist/remarkable.min.js"></script>
+        <script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+              integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/compareu.css">
 
-    <script src="https://cdn.firebase.com/libs/reactfire/1.0.0/reactfire.min.js"></script>
+        <script src="https://cdn.firebase.com/libs/reactfire/1.0.0/reactfire.min.js"></script>
 
 
-    <script src="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.css" />
+        <script src="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.css" />
 
-</head>
-<body>
+    </head>
+    <body>
 
-<div id="header">
-    <span id="sign-in-status"></span> | <a href="javascript:firebase.auth().signOut()">Sign Out</a>
-</div>
-<div id="firebaseui-auth-container"></div>
+    <div id="header">
+        <span id="sign-in-status"></span> | <a href="javascript:firebase.auth().signOut()">Sign Out</a>
+    </div>
+    <div id="firebaseui-auth-container"></div>
 
-<div id="container">
-    <!-- This element's contents will be replaced with your component. -->
-</div>
-<div id="footer">
-  <!--  Debug: <span id=""></span>-->
-</div>
-<script type="text/babel">
-    "use strict";
-    var config = {
-        apiKey: "AIzaSyAre5UpONItVmRqqoc5ykEUBEzgHUSdwuM",
-        authDomain: "compare-u.firebaseapp.com",
-        databaseURL: "https://compare-u.firebaseio.com",
-        storageBucket: "compare-u.appspot.com",
-        messagingSenderId: "896952563705"
-    };
+    <div id="container">
+        <!-- This element's contents will be replaced with your component. -->
+    </div>
+    <div id="footer">
+        <!--  Debug: <span id=""></span>-->
+    </div>
+    <script type="text/babel">
+        "use strict";
+        var config = {
+            apiKey: "AIzaSyAre5UpONItVmRqqoc5ykEUBEzgHUSdwuM",
+            authDomain: "compare-u.firebaseapp.com",
+            databaseURL: "https://compare-u.firebaseio.com",
+            storageBucket: "compare-u.appspot.com",
+            messagingSenderId: "896952563705"
+        };
 
-    var userName;
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-            $("#firebaseui-auth-container").hide();
-            // User is signed in.
-            var displayName = user.displayName;
-            var email = user.email;
-            var emailVerified = user.emailVerified;
-            var photoURL = user.photoURL;
-            var uid = user.uid;
-            userName = user.uid;
+        var userName;
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                $("#firebaseui-auth-container").hide();
+                // User is signed in.
+                var displayName = user.displayName;
+                var email = user.email;
+                var emailVerified = user.emailVerified;
+                var photoURL = user.photoURL;
+                var uid = user.uid;
+                userName = user.uid;
 
-            var providerData = user.providerData;
-            user.getToken().then(function(accessToken) {
-                document.getElementById('sign-in-status').textContent = "Welcome, " + displayName;
-                document.getElementById('account-details').textContent = JSON.stringify({
-                    displayName: displayName,
-                    email: email,
-                    emailVerified: emailVerified,
-                    photoURL: photoURL,
-                    uid: uid,
-                    accessToken: accessToken,
-                    providerData: providerData
-                }, null, '  ');
-            });
-        } else {
-            console.log("Signed out");
-            // User is signed out.
-            $("#header").hide();
-            // FirebaseUI config.
-            var uiConfig = {
-                'signInSuccessUrl': '/', //URL that we get sent BACK to after logging in
-                'signInOptions': [
-                    // Leave the lines as is for the providers you want to offer your users.
-                    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-//            firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-//            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-//            firebase.auth.GithubAuthProvider.PROVIDER_ID,
-//                    firebase.auth.EmailAuthProvider.PROVIDER_ID
-                ],
-                // Terms of service url.
-                'tosUrl': '<your-tos-url>',
-            };
-
-            // Initialize the FirebaseUI Widget using Firebase.
-            var ui = new firebaseui.auth.AuthUI(firebase.auth());
-            // The start method will wait until the DOM is loaded.
-            ui.start('#firebaseui-auth-container', uiConfig);
-            $("#container").hide();
-        }
-    }, function(error) {
-        console.log(error);
-    });
-
-    var TodoList = React.createClass({
-        render: function () {
-            var _this = this; //In the subcomponent, "this" will refer to window, so need to save "this" here
-            var createItem = function (item, key) {
-                return (<div key={key}><input type="text" onChange={_this.props.updateItem.bind(null, item['.key'])}
-                                              value={item.text}/>
-                    <button onClick={_this.props.removeItem.bind(null, item['.key'])}>&#x2716;</button>
-                </div>);
-            };
-            return <ul>{this.props.items.map(createItem)}</ul>;
-        }
-    });
-    var TodoApp = React.createClass({
-        mixins: [ReactFireMixin],
-        getInitialState: function () {
-            return {items: []};
-        },
-        componentWillMount: function () {
-            this.fireRef = firebase.database().ref('users').child(userName);
-            this.bindAsArray(this.fireRef, "items");
-        },
-        removeItem: function (key) {
-            firebase.auth().currentUser.getToken().then(function(idToken) {
-
-                $.ajax({
-                    url: "/todo",
-                    type: 'DELETE',
-                    data: {key: key, token: idToken}
+                var providerData = user.providerData;
+                user.getToken().then(function(accessToken) {
+                    document.getElementById('sign-in-status').textContent = "Welcome, " + displayName;
+                    document.getElementById('account-details').textContent = JSON.stringify({
+                        displayName: displayName,
+                        email: email,
+                        emailVerified: emailVerified,
+                        photoURL: photoURL,
+                        uid: uid,
+                        accessToken: accessToken,
+                        providerData: providerData
+                    }, null, '  ');
                 });
-            });
-        },
+            } else {
+                console.log("Signed out");
+                // User is signed out.
+                $("#header").hide();
+                // FirebaseUI config.
+                var uiConfig = {
+                    'signInSuccessUrl': '/', //URL that we get sent BACK to after logging in
+                    'signInOptions': [
+                        // Leave the lines as is for the providers you want to offer your users.
+                        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    //            firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+    //            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+    //            firebase.auth.GithubAuthProvider.PROVIDER_ID,
+    //                    firebase.auth.EmailAuthProvider.PROVIDER_ID
+                    ],
+                    // Terms of service url.
+                    'tosUrl': '<your-tos-url>',
+                };
 
-        handleAdd: function (e) {
-            var newText = $("#newTodo").val();
-            firebase.auth().currentUser.getToken().then(function(idToken) {
-
-                $.post("/todo", {todoText: newText, token: idToken});
-            });
-//            this.fireRef.push({"text": newText});
-            $("#newTodo").val("");
-        },
-        handleUpdate: function (fireKey, e) {
-            var newText = e.target.value;
-            firebase.auth().currentUser.getToken().then(function(idToken) {
-                $.ajax({url: "/todo",
-                    type: 'PUT',
-                    data: { todoText: newText, key: fireKey, token: idToken}});
-
-            });
-//            this.fireRef.child(fireKey).set({"text": e.target.value});
-
-        },
-        render: function () {
-            return (
-                    <div>
-                        <h3>TODO</h3>
-                        <TodoList items={this.state.items} updateItem={this.handleUpdate} removeItem={this.removeItem} />
-                        <input type="text" id="newTodo" /><button onClick={this.handleAdd}>New</button>
-                    </div>
-            );
-        }
-    });
-
-</script>
-<div id="doc">
-    <div id="hd">
-        <!-- Code adapted from Bootstrap example -->
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">Compare-U</a>
-                </div>
-
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li><a href="#compare-tool">Compare</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#login"></a></li>
-                    </ul>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
-        </nav>
-    </div>
-
-    <div id="mainContent" class="content">
-        <div id="app" role="application">
-
-            <!-- LANDING VIEW -->
-            <div class="panel" id="landing">
-                <div class="row">
-                    <div class="jumbotron col-md-8 col-md-offset-2">
-                        <h1>CompareU</h1>
-                        <p>CompareU is the one tool you need to select the university of your dreams.</p>
-                        <p><a class="btn btn-primary btn-lg" href="#compare-tool" role="button">Start Comparing!</a></p>
-                    </div>
-                </div>
-
-                <div id ="todoItems"> </div>
-                  <p> Upload your college essays for review in our database, we will send you back a response via your email adress.</p>
-                <form id="newItemForm" action="/todo" method="post" enctype="multipart/form-data"><input type="text" id="newTodo" name="todoText" /><input type="file" id="newFile" name="img" /><input type="submit" value="New" /></form>
-
-            </div>
-
-            <!---->
-            <div class="panel" id="login"></div>
-
-            <!-- REGISTER VIEW-->
-            <div class="panel" id="register"></div>
-
-            <!-- COMPARE TOOL VIEW -->
-            <div class="panel" id="compare-tool"></div>
-        </div>
-    </div>
-</div>
-<script src="js/compareu.js"></script>
-<script src="js/database.js"></script>
-<script src="js/RadarChart.js"></script>
-<!--<script src="js/react_components.jsx" type="text/babel"></script>-->
-<!--<script src="js/tests.js" type="text/babel"></script>-->
-
-<script type="text/babel">
-    "use strict";
-
-    ////// REGISTER COMPONENT
-    var RegClass = React.createClass({
-        registerUser: function () {
-            var username = $('#registerUsername').val();
-            var password = $('#registerPassword').val();
-            var firstName = $('#registerFirstName').val();
-            var lastName = $('#registerLastName').val();
-
-            $.ajax({url: "http://compare-u.herokuapp.com//register",
-                type: 'PUT',
-                data: { userid: username, password: password, firstName: firstName, lastName: lastName},
-                success: function(data) {
-                    switch (data) {
-                        case "1":
-                            alert("Username already exists. Please pick a different username, or login");
-                            break;
-                        case "0":
-                            alert("succesfully registered");
-                            break;
-                    }
-                },
-                error: function() {
-                    alert('Error');
-                }
-            });
-        },
-
-
-        render: function () {
-            return (
-                    <div className="container-fluid">
-                        <section className="container">
-                            <div className="container-page">
-                                <div className="col-md-6">
-                                    <h3 className="dark-grey">Registration</h3>
-
-                                    <div className="form-group col-lg-12">
-                                        <label>Username</label>
-                                        <input type="text" className="form-control" id="registerUsername"/>
-                                    </div>
-
-                                    <div className="form-group col-lg-12">
-                                        <label>Password</label>
-                                        <input type="password" name="" className="form-control" id="registerPassword"/>
-                                    </div>
-
-                                    <div className="form-group col-lg-6">
-                                        <label>First Name</label>
-                                        <input type="text" className="form-control" id="registerFirstName"/>
-                                    </div>
-
-                                    <div className="form-group col-lg-6">
-                                        <label>Last Name</label>
-                                        <input type="text" name="" className="form-control" id="registerLastName"/>
-                                    </div>
-
-                                    <div className="form-group col-lg-12" id="registerAlert"></div>
-                                </div>
-
-                                <div className="col-md-6">
-                                    <h3>WARNING</h3>
-                                    <p>Don't use a password that you care about AT ALL. This is not being encrypted,
-                                        everyone can see it, be smart.</p>
-                                    <h3 className="dark-grey">Terms and Conditions</h3>
-                                    <p>
-                                        By clicking on "Register" you agree to CompareU's Terms and Conditions
-                                    </p>
-                                    <p>
-                                        While rare, prices are subject to change based on exchange rate fluctuations -
-                                        In the event of such a fluctuation, the maximum price of CompareU will be zero US
-                                        Dollars.
-                                    </p>
-                                    <p>
-                                        Should there be an error in the description or pricing of a product, we will provide
-                                        you with a full refund of zero US Dollars.
-                                    </p>
-                                    <p>
-                                        Failure to read these Terms and Conditions will result in an automatic grade of A
-                                        for CompareU's creators.
-                                    </p>
-
-
-                                    <button type="submit" className="btn btn-primary" onClick={this.registerUser}>Register
-                                    </button>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-
-            );
-        }
-    });
-
-    ReactDOM.render(
-            <RegClass />,
-            document.getElementById('register')
-    );
-
-
-    ////// LOGIN COMPONENT
-    var LogClass = React.createClass({
-        getInitialState: function () {
-            return {
-                current_user: ""
+                // Initialize the FirebaseUI Widget using Firebase.
+                var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                // The start method will wait until the DOM is loaded.
+                ui.start('#firebaseui-auth-container', uiConfig);
+                $("#container").hide();
             }
-        },
-        loginUser: function (e) {
-            e.preventDefault();
-            var username = $('#inputUsername').val();
-            var password = $('#inputPassword').val();
-            var current_user = "";
+        }, function(error) {
+            console.log(error);
+        });
 
-            $.ajax({url: "http://compare-u.herokuapp.com//login",
-                type: 'PUT',
-                data: { userid: username, password: password},
-                success: function(data) {
-
-                    switch (data) {
-                        case "0":
-                            alert("Loing Successful");
-                            current_user=username;
-                            break;
-                        case "1":
-                            alert("Invalid User, Please signup");
-                            break;
-                        case "2":
-                            alert("Invalid Password. Please retry.");
-                            break;
-                    }
-                },
-                error: function() {
-                    alert('Error');
-                }
-            });
-        },
-
-
-        render: function () {
-            return (
-                    <div className="container">
-                        <form className="form-signin">
-                            <h2 className="form-signin-heading">Please sign in</h2>
-                            <label htmlFor="inputUsername" className="sr-only">Email address</label>
-                            <input type="text" id="inputUsername" className="form-control" placeholder="Username" required
-                                   autoFocus/>
-                            <label htmlFor="inputPassword" className="sr-only">Password</label>
-                            <input type="password" id="inputPassword" className="form-control" placeholder="Password"
-                                   required/>
-                            <button className="btn btn-lg btn-primary btn-block" type="submit" onClick={this.loginUser}>Sign
-                                in
-                            </button>
-                            <a href="#register" style={{display: "table", margin: "0 auto", fontSize: "large"}}>Register</a>
-                        </form>
-                        <div id="loginAlert"></div>
-                    </div>
-            )
-        }
-    });
-
-    ReactDOM.render(
-            <LogClass />,
-            document.getElementById('login')
-    );
-
-
-    ////////COMPARE TOOL COMPONENTS
-
-    var Universitycomp = React.createClass({
-        getInitialState: function () {
-            return {
-                options: [],
-                selected_schools: [],
-                LegendOptions: [],
-                currentSchool: {}
+        var TodoList = React.createClass({
+            render: function () {
+                var _this = this; //In the subcomponent, "this" will refer to window, so need to save "this" here
+                var createItem = function (item, key) {
+                    return (<div key={key}><input type="text" onChange={_this.props.updateItem.bind(null, item['.key'])}
+                                                  value={item.text}/>
+                        <button onClick={_this.props.removeItem.bind(null, item['.key'])}>&#x2716;</button>
+                    </div>);
+                };
+                return <ul>{this.props.items.map(createItem)}</ul>;
             }
-        },
-        school_select: function () {
-            var selectedSchoolID = $('#schoolSelector').find(":selected").val();
-            var selectedSchoolName = $('#schoolSelector').find(":selected").text();
+        });
+        var TodoApp = React.createClass({
+            mixins: [ReactFireMixin],
+            getInitialState: function () {
+                return {items: []};
+            },
+            componentWillMount: function () {
+                this.fireRef = firebase.database().ref('users').child(userName);
+                this.bindAsArray(this.fireRef, "items");
+            },
+            removeItem: function (key) {
+                firebase.auth().currentUser.getToken().then(function(idToken) {
 
-                var res = "https://api.data.gov/ed/collegescorecard/v1/schools?id=" + selectedSchoolID +
-                    "&fields=2014.admissions.admission_rate.overall,2014.admissions.sat_scores.average.overall,2014.student.size," +
-                    "2012.earnings.6_yrs_after_entry.median,2012.cost.avg_net_price.public,2012.completion.completion_rate_4yr_150nt&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
-            $.ajax({
-                url: res,
-                type: 'GET',
-                dataType: 'json',
-                cache: true,
-                success: function (data) {
-                    var admission_rate = (data.results[0]['2014.admissions.admission_rate.overall'] * 100).toFixed(1);
-                    var sat_score = data.results[0]['2014.admissions.sat_scores.average.overall'];
-                    var num_students = data.results[0]['2014.student.size'];
-                    var earnings = data.results[0]['2012.earnings.6_yrs_after_entry.median'];
-
-                    var cost = data.results[0]['2012.cost.avg_net_price.public'];
-
-                    var completion = data.results[0]['2014.completion.completion_rate_4yr_150nt'];
-                    this.setState({
-                        currentSchool: {
-                            name: selectedSchoolName,
-                            admission_rate: admission_rate,
-                            sat_score: sat_score,
-                            num_students: num_students,
-                            earnings: earnings,
-                            cost: cost,
-                            completion: completion
-                        }
+                    $.ajax({
+                        url: "/todo",
+                        type: 'DELETE',
+                        data: {key: key, token: idToken}
                     });
+                });
+            },
 
-                    var information = [
-                        {axis: "Admission rate", value: admission_rate},
-                        {axis: "SAT score", value: sat_score / 16},
-                        {axis: "Number of Students", value: num_students / 500},
-                        {axis: "Earnings", value: earnings / 500},
-                        {axis: "Cost", value: cost / 500},
-                        {axis: "completion_rate", value: completion / 500},
-                    ];
+            handleAdd: function (e) {
+                var newText = $("#newTodo").val();
+                firebase.auth().currentUser.getToken().then(function(idToken) {
 
-                    this.state.selected_schools[this.state.selected_schools.length] = information;
+                    $.post("/todo", {todoText: newText, token: idToken});
+                });
+    //            this.fireRef.push({"text": newText});
+                $("#newTodo").val("");
+            },
+            handleUpdate: function (fireKey, e) {
+                var newText = e.target.value;
+                firebase.auth().currentUser.getToken().then(function(idToken) {
+                    $.ajax({url: "/todo",
+                        type: 'PUT',
+                        data: { todoText: newText, key: fireKey, token: idToken}});
 
-                    this.state.LegendOptions.push(selectedSchoolName);
-                    var mycfg = {
-                        w: 500,
-                        h: 500,
-                        maxValue: 100,
-                        levels: 5,
-                        ExtraWidthX: 300
-                    };
+                });
+    //            this.fireRef.child(fireKey).set({"text": e.target.value});
 
-                    RadarChart.draw("#chart", this.state.selected_schools, mycfg, this.state.LegendOptions);
+            },
+            render: function () {
+                return (
+                        <div>
+                            <h3>TODO</h3>
+                            <TodoList items={this.state.items} updateItem={this.handleUpdate} removeItem={this.removeItem} />
+                            <input type="text" id="newTodo" /><button onClick={this.handleAdd}>New</button>
+                        </div>
+                );
+            }
+        });
 
-                }.bind(this),
-                error: function (xhr, status, err) {
-                    console.error(URL, status, err.toString());
-                    alert("Error retrieving data");
-                }.bind(this)
-            });
-        },
+    </script>
+    <div id="doc">
+        <div id="hd">
+            <!-- Code adapted from Bootstrap example -->
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Compare-U</a>
+                    </div>
 
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a href="#compare-tool">Compare</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#login"></a></li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        </div>
 
-        render: function () {
-            return (
-                    <div className="chartcompare">
-                        <select id="schoolSelector" onChange={this.school_select}>
-                            {this.state.options}
-                        </select>
-                        <button type="button" className="btn btn-primary" onClick={this.save_favorite}>Save Favorites</button>
-                              <p>Select your university from the list and its information will be displayed and will be added to the radar chart below.</p>
+        <div id="mainContent" class="content">
+            <div id="app" role="application">
 
-
-                        {/*<div id="schoolInfo"></div>*/}
-                        <SchoolInfo data={this.state.currentSchool}/>
-
-                        <div id="radar-container">
-                            <div id="chartContainer">
-                                <div id="chart"></div>
-                            </div>
+                <!-- LANDING VIEW -->
+                <div class="panel" id="landing">
+                    <div class="row">
+                        <div class="jumbotron col-md-8 col-md-offset-2">
+                            <h1>CompareU</h1>
+                            <p>CompareU is the one tool you need to select the university of your dreams.</p>
+                            <p><a class="btn btn-primary btn-lg" href="#compare-tool" role="button">Start Comparing!</a></p>
                         </div>
                     </div>
-            );
-        },
 
-        componentWillMount: function () {
-            var URL = "https://api.data.gov/ed/collegescorecard/v1/schools?_fields=school.name,id&_per_page=100&school.main_campus=1&school.state=va&school.degrees_awarded.predominant=3&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
-            $.ajax({
-                url: URL,
-                type: 'GET',
-                dataType: 'json',
-                cache: true,
-                success: function (data) {
-                    for (var i = 0; i < data.results.length; i++) {
-                        var sch_id = data.results[i]['id'];
-                        var sch_name = data.results[i]['school.name'];
-                        this.state.options.push(
-                                <option key={i} value={sch_id}> {sch_name} </option>
-                        );
+                    <div id ="todoItems"> </div>
+                        <p> If you want us to review your essay, upload your college essays to our database, we will send you back a critique via your email adress.</p>
+                        <form id="newItemForm" action="/todo" method="post" enctype="multipart/form-data"><input type="text" id="newTodo" name="todoText" /><input type="file"onClick={myHide()} id="newFile" name="img" /></form>
+                    <button onclick="myFunction()">Submit</button>
+                    <div id="sucess">File sucessfully uploaded</div>
+                    <script>$("#sucess").hide();</script>
+                    <script>
+                        function myFunction() {
+                           $("#sucess").show();
+                        }
+                    </script>
+                    <script>
+                        function myHide() {
+                            $("#sucess").hide();
+                        }
+                    </script>
+                </div>
+
+                <!---->
+                <div class="panel" id="login"></div>
+
+                <!-- REGISTER VIEW-->
+                <div class="panel" id="register"></div>
+
+                <!-- COMPARE TOOL VIEW -->
+                <div class="panel" id="compare-tool"></div>
+            </div>
+        </div>
+    </div>
+    <script src="js/compareu.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/RadarChart.js"></script>
+    <!--<script src="js/react_components.jsx" type="text/babel"></script>-->
+    <!--<script src="js/tests.js" type="text/babel"></script>-->
+
+    <script type="text/babel">
+        "use strict";
+
+        ////// REGISTER COMPONENT
+        var RegClass = React.createClass({
+            registerUser: function () {
+                var username = $('#registerUsername').val();
+                var password = $('#registerPassword').val();
+                var firstName = $('#registerFirstName').val();
+                var lastName = $('#registerLastName').val();
+
+                $.ajax({url: "http://compare-u.herokuapp.com//register",
+                    type: 'PUT',
+                    data: { userid: username, password: password, firstName: firstName, lastName: lastName},
+                    success: function(data) {
+                        switch (data) {
+                            case "1":
+                                alert("Username already exists. Please pick a different username, or login");
+                                break;
+                            case "0":
+                                alert("succesfully registered");
+                                break;
+                        }
+                    },
+                    error: function() {
+                        alert('Error');
                     }
-                    this.setState(this.state);
-                }.bind(this),
-                error: function (xhr, status, err) {
-                    console.error(URL, status, err.toString());
-                    alert("Error retrieving data");
-                }.bind(this)
-            });
-        }
-    });
+                });
+            },
 
-    // child component of University comp
-    var SchoolInfo = React.createClass({
-                render: function () {
-                    if (this.props.data.name != undefined) {
-                        return (
-                                <div className="container">
-                                    <br></br><p><b>{this.props.data.name}</b></p>
-                                    <p>Admission Rate: {this.props.data.admission_rate}</p>
-                                    <p>SAT Score: {this.props.data.sat_score}</p>
-                                    <p>Number of Students: {this.props.data.num_students}</p>
-                                    <p>Median Earnings: {this.props.data.earnings}</p>
+
+            render: function () {
+                return (
+                        <div className="container-fluid">
+                            <section className="container">
+                                <div className="container-page">
+                                    <div className="col-md-6">
+                                        <h3 className="dark-grey">Registration</h3>
+
+                                        <div className="form-group col-lg-12">
+                                            <label>Username</label>
+                                            <input type="text" className="form-control" id="registerUsername"/>
+                                        </div>
+
+                                        <div className="form-group col-lg-12">
+                                            <label>Password</label>
+                                            <input type="password" name="" className="form-control" id="registerPassword"/>
+                                        </div>
+
+                                        <div className="form-group col-lg-6">
+                                            <label>First Name</label>
+                                            <input type="text" className="form-control" id="registerFirstName"/>
+                                        </div>
+
+                                        <div className="form-group col-lg-6">
+                                            <label>Last Name</label>
+                                            <input type="text" name="" className="form-control" id="registerLastName"/>
+                                        </div>
+
+                                        <div className="form-group col-lg-12" id="registerAlert"></div>
+                                    </div>
+
+                                    <div className="col-md-6">
+                                        <h3>WARNING</h3>
+                                        <p>Don't use a password that you care about AT ALL. This is not being encrypted,
+                                            everyone can see it, be smart.</p>
+                                        <h3 className="dark-grey">Terms and Conditions</h3>
+                                        <p>
+                                            By clicking on "Register" you agree to CompareU's Terms and Conditions
+                                        </p>
+                                        <p>
+                                            While rare, prices are subject to change based on exchange rate fluctuations -
+                                            In the event of such a fluctuation, the maximum price of CompareU will be zero US
+                                            Dollars.
+                                        </p>
+                                        <p>
+                                            Should there be an error in the description or pricing of a product, we will provide
+                                            you with a full refund of zero US Dollars.
+                                        </p>
+                                        <p>
+                                            Failure to read these Terms and Conditions will result in an automatic grade of A
+                                            for CompareU's creators.
+                                        </p>
+
+
+                                        <button type="submit" className="btn btn-primary" onClick={this.registerUser}>Register
+                                        </button>
+                                    </div>
                                 </div>
-                        )
-                    }
-                    else return null;
-                }
+                            </section>
+                        </div>
+
+                );
             }
-    );
-
-    ReactDOM.render(
-            <Universitycomp />,
-            document.getElementById('compare-tool')
-    );
-
-    function createTodo(text, img)
-    {
-        if(img)
-        {
-            $('#todoItems').append(
-                    '<div class="todoItem"><img src="'+img+'" /><br/>'+text+'</div>'
-            );
-        }
-        else
-            $('#todoItems').append(
-                    '<div class="todoItem">'+text+'</div>'
-            );
-    }
-    $('#newItemForm').submit(function(e)
-    {
-        e.preventDefault();
-        var formData = new FormData($("#newItemForm")[0]);
-        console.log(formData);
-        $.ajax({
-            type: "POST",
-            url: "/todo",
-            data: formData,processData: false,
-            contentType: false
-
         });
-    });
+
+        ReactDOM.render(
+                <RegClass />,
+                document.getElementById('register')
+        );
+
+
+        ////// LOGIN COMPONENT
+        var LogClass = React.createClass({
+            getInitialState: function () {
+                return {
+                    current_user: ""
+                }
+            },
+            loginUser: function (e) {
+                e.preventDefault();
+                var username = $('#inputUsername').val();
+                var password = $('#inputPassword').val();
+                var current_user = "";
+
+                $.ajax({url: "http://compare-u.herokuapp.com//login",
+                    type: 'PUT',
+                    data: { userid: username, password: password},
+                    success: function(data) {
+
+                        switch (data) {
+                            case "0":
+                                alert("Loing Successful");
+                                current_user=username;
+                                break;
+                            case "1":
+                                alert("Invalid User, Please signup");
+                                break;
+                            case "2":
+                                alert("Invalid Password. Please retry.");
+                                break;
+                        }
+                    },
+                    error: function() {
+                        alert('Error');
+                    }
+                });
+            },
+
+
+            render: function () {
+                return (
+                        <div className="container">
+                            <form className="form-signin">
+                                <h2 className="form-signin-heading">Please sign in</h2>
+                                <label htmlFor="inputUsername" className="sr-only">Email address</label>
+                                <input type="text" id="inputUsername" className="form-control" placeholder="Username" required
+                                       autoFocus/>
+                                <label htmlFor="inputPassword" className="sr-only">Password</label>
+                                <input type="password" id="inputPassword" className="form-control" placeholder="Password"
+                                       required/>
+                                <button className="btn btn-lg btn-primary btn-block" type="submit" onClick={this.loginUser}>Sign
+                                    in
+                                </button>
+                                <a href="#register" style={{display: "table", margin: "0 auto", fontSize: "large"}}>Register</a>
+                            </form>
+                            <div id="loginAlert"></div>
+                        </div>
+                )
+            }
+        });
+
+        ReactDOM.render(
+                <LogClass />,
+                document.getElementById('login')
+        );
+
+
+        ////////COMPARE TOOL COMPONENTS
+
+        var Universitycomp = React.createClass({
+            getInitialState: function () {
+                return {
+                    options: [],
+                    selected_schools: [],
+                    LegendOptions: [],
+                    currentSchool: {}
+                }
+            },
+            school_select: function () {
+                var selectedSchoolID = $('#schoolSelector').find(":selected").val();
+                var selectedSchoolName = $('#schoolSelector').find(":selected").text();
+
+                    var res = "https://api.data.gov/ed/collegescorecard/v1/schools?id=" + selectedSchoolID +
+                        "&fields=2014.admissions.admission_rate.overall,2014.admissions.sat_scores.average.overall,2014.student.size," +
+                        "2012.earnings.6_yrs_after_entry.median,2012.cost.avg_net_price.public,2012.completion.completion_rate_4yr_150nt&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
+                $.ajax({
+                    url: res,
+                    type: 'GET',
+                    dataType: 'json',
+                    cache: true,
+                    success: function (data) {
+                        var admission_rate = (data.results[0]['2014.admissions.admission_rate.overall'] * 100).toFixed(1);
+                        var sat_score = data.results[0]['2014.admissions.sat_scores.average.overall'];
+                        var num_students = data.results[0]['2014.student.size'];
+                        var earnings = data.results[0]['2012.earnings.6_yrs_after_entry.median'];
+
+                        var cost = data.results[0]['2012.cost.avg_net_price.public'];
+                        var completion = data.results[0]['2014.completion.completion_rate_4yr_150nt'];
+
+                        var number_of_engineering = data.results[0]['2012.cost.avg_net_price.public'];
+
+                        this.setState({
+                            currentSchool: {
+                                name: selectedSchoolName,
+                                admission_rate: admission_rate,
+                                sat_score: sat_score,
+                                num_students: num_students,
+                                earnings: earnings,
+                                cost: cost,
+                                completion: completion,
+                                number_of_engineering: number_of_engineering,
+                            }
+                        });
+
+                        var information = [
+                            {axis: "Admission rate", value: admission_rate},
+                            {axis: "SAT score", value: sat_score / 16},
+                            {axis: "Number of Students", value: num_students / 500},
+                            {axis: "Earnings", value: earnings / 500},
+                            {axis: "Cost", value: cost / 500},
+                            {axis: "completion_rate", value: completion / 500},
+                            {axis: "number_of_engineering", value: number_of_engineering/100},
+                        ];
+
+                        this.state.selected_schools[this.state.selected_schools.length] = information;
+
+                        this.state.LegendOptions.push(selectedSchoolName);
+                        var mycfg = {
+                            w: 500,
+                            h: 500,
+                            maxValue: 100,
+                            levels: 5,
+                            ExtraWidthX: 300
+                        };
+
+                        RadarChart.draw("#chart", this.state.selected_schools, mycfg, this.state.LegendOptions);
+
+                    }.bind(this),
+                    error: function (xhr, status, err) {
+                        console.error(URL, status, err.toString());
+                        alert("Error retrieving data");
+                    }.bind(this)
+                });
+            },
+
+
+        render: function () {
+                return (
+                        <div className="chartcompare">
+                            <select id="schoolSelector" onChange={this.school_select}>
+                                {this.state.options}
+                            </select>
+                            <button type="button" className="btn btn-primary" onClick={this.save_favorite}>Save Favorites</button>
+                            <p>Select your university from the list and its information will be displayed and will be added to the radar chart below.</p>
+
+                            {/*<div id="schoolInfo"></div>*/}
+                            <SchoolInfo data={this.state.currentSchool}/>
+
+                            <div id="radar-container">
+                                <div id="chartContainer">
+                                    <div id="chart"></div>
+                                </div>
+                            </div>
+
+                          </div>
+
+
+                );
+            },
+
+            componentWillMount: function () {
+                var URL = "https://api.data.gov/ed/collegescorecard/v1/schools?_fields=school.name,id&_per_page=100&school.main_campus=1&school.state=va&school.degrees_awarded.predominant=3&api_key=FNMmHrRzLriPD033jmlA96AOgjmUmKXiRUviDLnU";
+                $.ajax({
+                    url: URL,
+                    type: 'GET',
+                    dataType: 'json',
+                    cache: true,
+                    success: function (data) {
+                        this.state.options.push(
+                                <option key={0}> {"Select University    "} </option>
+                        );
+                        for (var i = 0; i < data.results.length; i++) {
+                            var sch_id = data.results[i]['id'];
+                            var sch_name = data.results[i]['school.name'];
+                            this.state.options.push(
+                                    <option key={i+1} value={sch_id}> {sch_name} </option>
+                            );
+                    }
+
+                        this.setState(this.state);
+                    }.bind(this),
+                    error: function (xhr, status, err) {
+                        console.error(URL, status, err.toString());
+                        alert("Error retrieving data");
+                    }.bind(this)
+                });
+            }
+        });
+
+        // child component of University comp
+        var SchoolInfo = React.createClass({
+                    render: function () {
+                        if (this.props.data.name != undefined) {
+                            return (
+                                    <div className="container">
+                                        <br></br><p><b>{this.props.data.name}</b></p>
+                                        <p>Admission Rate: {this.props.data.admission_rate}</p>
+                                        <p>SAT Score: {this.props.data.sat_score}</p>
+                                        <p>Number of Students: {this.props.data.num_students}</p>
+                                        <p>Median Earnings: {this.props.data.earnings}</p>
+                                    </div>
+                            )
+                        }
+                        else return null;
+                    }
+                }
+        );
+
+        ReactDOM.render(
+                <Universitycomp />,
+                document.getElementById('compare-tool')
+        );
+
+        function createTodo(text, img)
+        {
+            if(img)
+            {
+                $('#todoItems').append(
+                        '<div class="todoItem"><img src="'+img+'" /><br/>'+text+'</div>'
+                );
+            }
+            else
+                $('#todoItems').append(
+                        '<div class="todoItem">'+text+'</div>'
+                );
+        }
+        $('#newItemForm').submit(function(e)
+        {
+            e.preventDefault();
+            var formData = new FormData($("#newItemForm")[0]);
+            console.log(formData);
+            $.ajax({
+                type: "POST",
+                url: "/todo",
+                data: formData,processData: false,
+                contentType: false
+
+            });
+        });
 
 
 
 
-</script>
+    </script>
 
-</body>
-</html>
+    </body>
+    </html>
